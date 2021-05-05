@@ -1,13 +1,13 @@
-import { configurationInterface } from '.';
+import { ConfigurationInterface } from '.';
 import { wrapperDB } from '../utils';
 import Koa from 'koa';
 import { createPool } from '../utils/broker';
 
-interface middlewareInterface {
+export interface MiddlewareInterface {
   /**
    * Configuration Interface
    */
-  options: configurationInterface,
+  options: ConfigurationInterface,
   /**
    * Koa Instance
    */
@@ -21,5 +21,3 @@ interface middlewareInterface {
    */
   db: typeof wrapperDB,
 }
-
-export { middlewareInterface };

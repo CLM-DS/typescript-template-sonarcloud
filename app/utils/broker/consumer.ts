@@ -1,8 +1,8 @@
 import { Consumer, Kafka } from 'kafkajs';
 import { ServiceBusClient } from '@azure/service-bus';
 import { PubSub } from '@google-cloud/pubsub';
-import { brokerConsumerInterface, brokerPublisherInterface, listenerConfigurationInterface } from '../../interfaces';
-import { brokerClientType } from '../../types';
+import { BrokerConsumerInterface, BrokerPublisherInterface, ListenerConfigurationInterface } from '../../interfaces';
+import { BrokerClientType } from '../../types';
 
 /**
  * create consumer
@@ -10,7 +10,7 @@ import { brokerClientType } from '../../types';
  * @param {*} brokerOptions
  * @returns {Consumer}
  */
-const createConsumer = (brokerClient: brokerClientType, brokerOptions: brokerPublisherInterface): brokerConsumerInterface => {
+const createConsumer = (brokerClient: BrokerClientType, brokerOptions: BrokerPublisherInterface): BrokerConsumerInterface => {
   /**
    * @callback messageReceived
    * @param {*} message
@@ -29,14 +29,14 @@ const createConsumer = (brokerClient: brokerClientType, brokerOptions: brokerPub
    */
 
   let brokerReceiver: Consumer;
-  const messageProcessor: { [key: string]: listenerConfigurationInterface } = {};
+  const messageProcessor: { [key: string]: ListenerConfigurationInterface } = {};
 
   /**
    *
    * @param {Kafka} client
    * @param {BrokerOptionSubscriber} options
    */
-  const createReceiverKafka = async (client: brokerClientType, options: listenerConfigurationInterface) => {
+  const createReceiverKafka = async (client: BrokerClientType, options: ListenerConfigurationInterface) => {
     /**
      * @type {import('kafkajs').Consumer}
      */
@@ -89,7 +89,7 @@ const createConsumer = (brokerClient: brokerClientType, brokerOptions: brokerPub
    * @param {PubSub} client
    * @param {ListenerOption} options
    */
-  const createReceiverPubSub = (client: brokerClientType, options: listenerConfigurationInterface) => {
+  const createReceiverPubSub = (client: BrokerClientType, options: ListenerConfigurationInterface) => {
     const subscription = (client as PubSub).subscription(options.topic);
     subscription.addListener('message', options.onMessage);
     subscription.addListener('error', options.onError);
@@ -100,7 +100,7 @@ const createConsumer = (brokerClient: brokerClientType, brokerOptions: brokerPub
    * @param {ServiceBusClient} client
    * @param {ListenerOption} options
    */
-  const createReceiverServiceBus = async (client: brokerClientType, options: listenerConfigurationInterface) => {
+  const createReceiverServiceBus = async (client: BrokerClientType, options: ListenerConfigurationInterface) => {
     const receiver = (client as ServiceBusClient).createReceiver(options.topic);
     receiver.subscribe({
       processMessage: options.onMessage,
@@ -112,7 +112,7 @@ const createConsumer = (brokerClient: brokerClientType, brokerOptions: brokerPub
    * create subscriber instance to create message
    * @param {BrokerOptionSubscriber} options
    */
-  const addListener = async (options: listenerConfigurationInterface) => {
+  const addListener = async (options: ListenerConfigurationInterface) => {
     switch (brokerOptions.type) {
       case 'kafka':
         await createReceiverKafka(brokerClient, options);

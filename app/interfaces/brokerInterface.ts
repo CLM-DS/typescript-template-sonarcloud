@@ -1,7 +1,7 @@
 import { createConsumer } from '../utils/broker/consumer';
 import { createProducer } from '../utils/broker/producer';
 
-interface brokerInterface {
+export interface BrokerInterface {
   /**
    * Check function
    */
@@ -23,5 +23,3 @@ interface brokerInterface {
    */
   haveError: () => string | boolean,
 }
-
-export { brokerInterface };

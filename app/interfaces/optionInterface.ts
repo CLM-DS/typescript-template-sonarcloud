@@ -1,4 +1,4 @@
-interface optionInterface {
+export interface OptionInterface {
   /**
    * MS Version
    */
@@ -16,5 +16,3 @@ interface optionInterface {
    */
   keys: Array<string>,
 }
-
-export { optionInterface };

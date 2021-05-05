@@ -1,3 +1,3 @@
-import { brokerClientType } from './brokerClientType';
+import { BrokerClientType } from './brokerClientType';
 
-export { brokerClientType };
+export { BrokerClientType };

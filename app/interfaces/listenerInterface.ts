@@ -1,12 +1,12 @@
-import { configurationInterface } from '.';
+import { ConfigurationInterface } from '.';
 import { wrapperDB } from '../utils';
 import { createLogger } from '../utils/logger';
 
-interface listenerInterface {
+export interface ListenerInterface {
   /**
    * MicroService Default Prefix
    */
-  options: configurationInterface,
+  options: ConfigurationInterface,
   /**
    * Listening Port Number
    */
@@ -16,5 +16,3 @@ interface listenerInterface {
    */
   log: ReturnType<typeof createLogger>,
 }
-
-export { listenerInterface };

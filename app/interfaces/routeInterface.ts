@@ -1,12 +1,12 @@
 import Koa from 'koa';
-import { configurationInterface } from '.';
+import { ConfigurationInterface } from '.';
 import { createLogger } from '../utils/logger';
 
-interface routeInterface {
+export interface RouteInterface {
   /**
    * MicroService Default Prefix
    */
-  options: configurationInterface,
+  options: ConfigurationInterface,
   /**
    * Koa Instance
    */
@@ -16,5 +16,3 @@ interface routeInterface {
    */
   log: ReturnType<typeof createLogger>,
 }
-
-export { routeInterface };

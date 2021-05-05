@@ -1,10 +1,8 @@
-import { listenerConfigurationInterface } from '.';
+import { ListenerConfigurationInterface } from '.';
 
-interface brokerConsumerInterface {
+export interface BrokerConsumerInterface {
   /**
    * Add Listener Function
    */
-  addListener: (options: listenerConfigurationInterface) => Promise<void>;
+  addListener: (options: ListenerConfigurationInterface) => Promise<void>;
 }
-
-export { brokerConsumerInterface };

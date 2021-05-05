@@ -2,8 +2,8 @@ import { ServiceBusClient } from '@azure/service-bus';
 import { PubSub } from '@google-cloud/pubsub';
 import { Kafka, ProducerRecord } from 'kafkajs';
 import xss from 'xss';
-import { brokerProducerInterface, brokerPublisherInterface } from '../../interfaces';
-import { brokerClientType } from '../../types';
+import { BrokerProducerInterface, BrokerPublisherInterface } from '../../interfaces';
+import { BrokerClientType } from '../../types';
 
 /**
  * create producer from event
@@ -11,7 +11,7 @@ import { brokerClientType } from '../../types';
  * @param {*} brokerOptions
  * @returns {Producer}
  */
-const createProducer = (brokerClient: brokerClientType, brokerOptions: brokerPublisherInterface): brokerProducerInterface => {
+const createProducer = (brokerClient: BrokerClientType, brokerOptions: BrokerPublisherInterface): BrokerProducerInterface => {
   const defaultRecord = {
     topic: '',
     data: undefined,
@@ -23,7 +23,7 @@ const createProducer = (brokerClient: brokerClientType, brokerOptions: brokerPub
    * @param {Kafka} client
    * @param {import('kafkajs').ProducerRecord} record
    */
-  const publishMessageKafka = async (client: brokerClientType, record: ProducerRecord) => {
+  const publishMessageKafka = async (client: BrokerClientType, record: ProducerRecord) => {
     /**
      * @type {import('kafkajs').Producer}
      */
@@ -39,7 +39,7 @@ const createProducer = (brokerClient: brokerClientType, brokerOptions: brokerPub
    * @param {PubSub} client
    */
   const publishMessagePubSub = (
-    client: brokerClientType,
+    client: BrokerClientType,
     record = defaultRecord,
   ) => {
     /**
@@ -61,7 +61,7 @@ const createProducer = (brokerClient: brokerClientType, brokerOptions: brokerPub
    */
 
   const publishMessageServiceBus = (
-    client: brokerClientType,
+    client: BrokerClientType,
     record = defaultRecord,
   ) => {
     /**

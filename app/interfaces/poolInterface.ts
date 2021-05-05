@@ -1,18 +1,18 @@
-import { brokerInterface } from '.';
+import { BrokerInterface } from '.';
 
-interface poolInterface {
+export interface PoolInterface {
   /**
    * Add Broker Function
    */
-  addBroker: (alias: string, broker: brokerInterface) => void,
+  addBroker: (alias: string, broker: BrokerInterface) => void,
   /**
    * Get Broker Function
    */
-  getBroker: (alias: string) => brokerInterface,
+  getBroker: (alias: string) => BrokerInterface,
   /**
    * Consumer
    */
-  map: (func: (arg0: brokerInterface) => brokerInterface) => Array<brokerInterface>,
+  map: (func: (arg0: BrokerInterface) => BrokerInterface) => Array<BrokerInterface>,
   /**
    * Set Error Function
    */
@@ -22,5 +22,3 @@ interface poolInterface {
    */
   haveError: () => string | boolean,
 }
-
-export { poolInterface };

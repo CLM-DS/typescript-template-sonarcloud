@@ -1,13 +1,13 @@
 import { SecretManagerServiceClient } from '@google-cloud/secret-manager';
-import { optionInterface, secretInterface } from '../interfaces';
+import { OptionInterface, SecretInterface } from '../interfaces';
 
 /**
  * Load Secret and return object to values access
- * @param {optionInterface} options parameters to search data in GCP
+ * @param {OptionInterface} options parameters to search data in GCP
  * @param {'online'|'offline'} mode online: used secret manager GCP, offline: enviroment vaiables
- * @returns {secretInterface}
+ * @returns {SecretInterface}
  */
-const loadSecrets = async (options: optionInterface, mode: string): Promise<secretInterface> => {
+const loadSecrets = async (options: OptionInterface, mode: string): Promise<SecretInterface> => {
   let secrets: { [key: string]: string } | NodeJS.ProcessEnv = {}
 
   if (mode === 'online') {

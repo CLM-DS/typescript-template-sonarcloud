@@ -6,7 +6,7 @@ import { loggerMiddleware } from './loggerMiddleware';
 import { mongoMiddleware } from './mongoMiddleware';
 import { monitorMiddleware } from './monitorMiddleware';
 import { brokerMiddleware } from './brokerMiddleware';
-import { middlewareInterface } from '../../interfaces';
+import { MiddlewareInterface } from '../../interfaces';
 
 /**
  * @typedef {Object} Argument
@@ -33,7 +33,7 @@ import { middlewareInterface } from '../../interfaces';
  * @param {Argument} args
  * @returns {import('koa')}
  */
-const useMiddleware = (args: middlewareInterface): Koa => {
+const useMiddleware = (args: MiddlewareInterface): Koa => {
   const {
     app,
     options,

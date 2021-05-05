@@ -3,8 +3,8 @@ import { PubSub }  from '@google-cloud/pubsub';
 import { ServiceBusClient } from '@azure/service-bus';
 import { createProducer } from './producer';
 import { createConsumer } from './consumer';
-import { brokerInterface, brokerPublisherInterface, listenerConfigurationInterface, listenerInterface, poolInterface } from '../../interfaces';
-import { brokerClientType } from '../../types';
+import { BrokerInterface, BrokerPublisherInterface, ListenerConfigurationInterface, ListenerInterface, PoolInterface } from '../../interfaces';
+import { BrokerClientType } from '../../types';
 
 /**
  * @typedef {Object} KafkaOption
@@ -22,21 +22,21 @@ import { brokerClientType } from '../../types';
 /**
  * @param {BrokerPublisherOption} brokerOptions
  */
-const createBroker = (brokerOptions: brokerPublisherInterface): brokerInterface => {
+const createBroker = (brokerOptions: BrokerPublisherInterface): BrokerInterface => {
   /**
    * @type {(ServiceBusClient|Kafka|PubSub)}
    */
-  let brokerClient: brokerClientType = null;
+  let brokerClient: BrokerClientType = null;
 
   /**
    * create client kafak
    * @param {KafkaOption} options
    */
-  const createKafka = (options: brokerPublisherInterface['kafkaOption']) => new Kafka(options);
+  const createKafka = (options: BrokerPublisherInterface['kafkaOption']) => new Kafka(options);
 
   const createPubSub = () => new PubSub();
 
-  const createServiceBus = (strConn: brokerPublisherInterface['serviceBusStrCnn']) => new ServiceBusClient(strConn);
+  const createServiceBus = (strConn: BrokerPublisherInterface['serviceBusStrCnn']) => new ServiceBusClient(strConn);
   /**
    * @type {boolean|String}
    */
@@ -128,10 +128,10 @@ const createBroker = (brokerOptions: brokerPublisherInterface): brokerInterface 
 /**
  * @returns {PoolBroker}
  */
-const createPool = (): poolInterface => {
-  const pool: Record<string, brokerInterface> = {};
+const createPool = (): PoolInterface => {
+  const pool: Record<string, BrokerInterface> = {};
   const aliases: Array<string> = [];
-  const addBroker = (alias: string, broker: brokerInterface) => {
+  const addBroker = (alias: string, broker: BrokerInterface) => {
     pool[alias] = broker;
     aliases.push(alias);
   };/**
@@ -146,7 +146,7 @@ const createPool = (): poolInterface => {
     }
     return broker;
   };
-  const map = (func: (arg0: brokerInterface) => brokerInterface) => aliases.map((alias) => func(pool[alias]));
+  const map = (func: (arg0: BrokerInterface) => BrokerInterface) => aliases.map((alias) => func(pool[alias]));
 
   let err = false;
   const setError = (error: boolean) => {
@@ -168,7 +168,7 @@ const createPool = (): poolInterface => {
  * @param {*} args object with, db, log and config from app
  * @param {*} onMessage handler to processing event received
  */
- const createContextMessage = (args: listenerInterface, onMessage: listenerConfigurationInterface['onMessage']) => (msg) => {
+ const createContextMessage = (args: ListenerInterface, onMessage: ListenerConfigurationInterface['onMessage']) => (msg) => {
   const msgMutable = msg;
   msgMutable.context = args;
   

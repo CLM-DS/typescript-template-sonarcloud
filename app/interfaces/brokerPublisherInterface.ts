@@ -1,10 +1,10 @@
 import { KafkaConfig } from 'kafkajs';
 
-interface kafkaOption extends KafkaConfig {
+interface KafkaOption extends KafkaConfig {
   groupId: string
 }
 
-interface brokerPublisherInterface {
+export interface BrokerPublisherInterface {
   /**
    * Option type
    */
@@ -12,11 +12,9 @@ interface brokerPublisherInterface {
   /**
    *  Kafka Option
    */
-   kafkaOption: kafkaOption,
+  kafkaOption: KafkaOption,
   /**
    * Service Bus
    */
   serviceBusStrCnn: string,
 }
-
-export { brokerPublisherInterface };

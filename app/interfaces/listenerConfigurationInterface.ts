@@ -1,4 +1,4 @@
-interface listenerConfigurationInterface {
+export interface ListenerConfigurationInterface {
   /**
    * Listener Topic
    */
@@ -12,8 +12,6 @@ interface listenerConfigurationInterface {
    */
   onError: (error: unknown) => Promise<void>,
 }
-
-export { listenerConfigurationInterface };
 
 //message and error are unknown because the values can be different depending of the interface 
 //ServiceBusReceivedMessage, KafkaMessage, ProcessErrorArgs, Error

@@ -1,4 +1,4 @@
-interface configurationInterface {
+export interface ConfigurationInterface {
   /**
    * MicroService Default Prefix
    */
@@ -20,5 +20,3 @@ interface configurationInterface {
    */
   brokerConfig?: any,
 }
-
-export { configurationInterface };

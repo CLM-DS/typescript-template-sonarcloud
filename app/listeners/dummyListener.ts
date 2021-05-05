@@ -1,11 +1,10 @@
-import { ListenerInterface } from '../interfaces';
-import { createPool } from '../utils/broker';
+import { ListenerInterface, MiddlewareInterface } from '../interfaces';
 
 /**
  *
  * @param {import('../utils/broker').PoolBroker} pool
  */
-const createListener = async (pool: ReturnType<typeof createPool>, args: ListenerInterface): Promise<void> => {
+const createListener = async (pool: MiddlewareInterface['pool'], args: ListenerInterface): Promise<void> => {
   const broker = pool.getBroker('kafka');
 
   // this is code from example

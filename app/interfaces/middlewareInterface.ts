@@ -15,7 +15,7 @@ export interface MiddlewareInterface {
   /**
    * Pool Instance
    */
-  pool: ReturnType<typeof createPool> | undefined,
+  pool: ReturnType<typeof createPool>,
   /**
    * Database Instance
    */

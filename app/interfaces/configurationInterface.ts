@@ -17,11 +17,8 @@ export interface ConfigurationInterface {
    * Database Name
    */
   dataSource: string,
-}
-
-export interface BrokerConfigurationInterface extends ConfigurationInterface {
   /**
    * Broker Configuration
    */
-  brokerConfig: BrokerPublisherInterface,
+  brokerConfig?: { [s: string]: BrokerPublisherInterface },
 }

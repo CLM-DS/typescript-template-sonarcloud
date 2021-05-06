@@ -1,4 +1,4 @@
-import { BrokerConfigurationInterface, ConfigurationInterface } from './configurationInterface';
+import { ConfigurationInterface } from './configurationInterface';
 import { SecretInterface } from './secretInterface';
 import { OptionInterface } from './optionInterface';
 import { ListenerInterface } from './listenerInterface';
@@ -13,7 +13,6 @@ import { PoolInterface } from './poolInterface'
 import { ContextInterface } from './contextInterface'
 
 export {
-  BrokerConfigurationInterface,
   ConfigurationInterface,
   SecretInterface,
   OptionInterface,

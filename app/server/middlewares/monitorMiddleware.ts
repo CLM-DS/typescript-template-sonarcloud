@@ -1,5 +1,6 @@
 import { Context, Next, } from 'koa';
 import xss from 'xss';
+import { ContextInterface } from '../../interfaces';
 
 type LogType = 'request' | 'response';
 
@@ -25,7 +26,7 @@ type LogType = 'request' | 'response';
  * @template T
  * @returns {LogData}
  */
-const buildLog = (data, type: LogType) => ({
+const buildLog = (data: ContextInterface, type: LogType) => ({
   ...data,
   type,
   timestamp: new Date().toString(),

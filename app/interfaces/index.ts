@@ -10,6 +10,7 @@ import { BrokerPublisherInterface } from './brokerPublisherInterface'
 import { BrokerConsumerInterface } from './brokerConsumerInterface'
 import { BrokerProducerInterface } from './brokerProducerInterface'
 import { PoolInterface } from './poolInterface'
+import { ContextInterface } from './contextInterface'
 
 export {
   BrokerConfigurationInterface,
@@ -25,4 +26,5 @@ export {
   BrokerConsumerInterface,
   BrokerProducerInterface,
   PoolInterface,
+  ContextInterface,
 };

@@ -9,7 +9,7 @@ import { createRouterStatus } from './statusRoute';
  */
 const useRoute = (app: RouteInterface['app'], router: ReturnType<typeof createRouterStatus>, options: RouteInterface['options']) => {
   const { prefix } = options;
-  router.prefix(prefix);
+  router.prefix(prefix || '');
   app.use(router.routes());
   app.use(router.allowedMethods());
   return app;

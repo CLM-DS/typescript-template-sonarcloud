@@ -168,8 +168,9 @@ const createPool = (): PoolInterface => {
  * in the context key
  * @param {*} args object with, db, log and config from app
  * @param {*} onMessage handler to processing event received
+ * @deprecated
  */
- const createContextMessage = (args: ListenerInterface, onMessage: ListenerConfigurationInterface['onMessage']) => (msg) => {
+ const createContextMessage = (args: ListenerInterface, onMessage: ListenerConfigurationInterface['onMessage']) => (msg: any) => {
   const msgMutable = msg;
   msgMutable.context = args;
   

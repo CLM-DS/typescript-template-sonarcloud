@@ -1,9 +1,10 @@
-import 'dotenv/config.js';
+import dotenv from 'dotenv';
 import { loadSecrets } from './config/secretManager';
 import { loadConfig } from './config';
 import { startServer } from './server';
 
 const run = async () => {
+  dotenv.config();
   // set secrets used in app
   const options = {
     env: process.env.APP_ENV || 'qa',

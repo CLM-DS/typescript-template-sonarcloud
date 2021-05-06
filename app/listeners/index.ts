@@ -4,7 +4,7 @@ import { createBroker, createPool } from '../utils/broker';
 const createBrokers = (args: ListenerInterface) => {
   const { options } = args;
   const pool = createPool();
-  const entries = Object.entries(options.brokerConfig);
+  const entries = Object.entries(options.brokerConfig!);
 
   entries.forEach((entry) => {
     pool.addBroker(entry[0], createBroker(entry[1]));

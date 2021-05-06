@@ -4,6 +4,10 @@ interface KafkaOption extends KafkaConfig {
   groupId: string
 }
 
+export interface BrokerConfig {
+   [alias: string]: BrokerPublisherInterface
+ }
+
 export interface BrokerPublisherInterface {
   /**
    * Option type

@@ -1,4 +1,6 @@
-import * as xss from 'xss';
+import { Schema, ValidationError } from 'joi';
+import { Context } from 'koa';
+import xss from 'xss';
 import { statusCodes } from '../constants/httpStatus';
 
 /**
@@ -17,9 +19,9 @@ import { statusCodes } from '../constants/httpStatus';
  * @param {string} property
  * @param {Context} ctx
  */
-const getProperty = (property, ctx) => {
+const getProperty = (property: string, ctx: Context) => {
   const properties = property.split('.');
-  return properties.reduce(
+  return properties.reduce<undefined | any>(
     (acc, prop) => (acc ? acc[prop] : ctx[prop]),
     undefined,
   );
@@ -31,7 +33,7 @@ const getProperty = (property, ctx) => {
  * @param {string} value
  * @param {Context} ctx
  */
-const setProperty = (property, value, ctx) => {
+const setProperty = (property: string, value: any, ctx: Context) => {
   const properties = property.split('.');
   let access = ctx;
   for (let i = 0; i <= properties.length - 2; i += 1) {
@@ -48,8 +50,24 @@ const setProperty = (property, value, ctx) => {
  * @param {Context} ctx
  * @param {boolean} abort
  */
-const evaluateSchemes = (schemas, ctx, abort = true) => {
-  const err = schemas.reduce((acc, item) => {
+export interface CustomError {
+  property: string;
+  message: string;
+}
+export interface ResultValidator {
+  [key: string]: ValidationError | CustomError;
+}
+export interface SchemeValidator {
+  property: string;
+  scheme: Schema;
+}
+export type SchemeError = ResultValidator | CustomError | ValidationError | undefined;
+export type EvaluateSchemes = (schemas: SchemeValidator[], ctx: Context, abort?: boolean) => SchemeError;
+/**
+ * @param {Boolean} [abort=true]
+ */
+const evaluateSchemes: EvaluateSchemes = (schemas, ctx, abort = true) => {
+  const err = schemas.reduce<SchemeError>((acc, item) => {
     if (acc && abort) {
       return acc;
     }
@@ -92,7 +110,11 @@ const evaluateSchemes = (schemas, ctx, abort = true) => {
  * @param {ValidationOption} options
  * @returns {(ctx: Context) => Context}
  */
-const useValidationObject = (schemas, obj, options = {}) => {
+export type ValidatorOptions = {
+  abort?: boolean;
+  transform?: (error: SchemeError, ctx?: Context) => any;
+}
+const useValidationObject = (schemas: SchemeValidator[], obj: any, options: ValidatorOptions = {}) => {
   const { abort = true } = options;
   let err = evaluateSchemes(schemas, obj, abort);
   if (err) {
@@ -111,7 +133,8 @@ const useValidationObject = (schemas, obj, options = {}) => {
  * @param {ValidationOption} options
  * @returns {(ctx: Context) => Context}
  */
-const useValidation = (schemas, handler, options = {}) => (ctx) => {
+export type CallbackKoa = (ctx: Context) => Context;
+const useValidation = (schemas: SchemeValidator[], handler: CallbackKoa, options: ValidatorOptions = {}) => (ctx: Context) => {
   const { abort = true } = options;
   let err = evaluateSchemes(schemas, ctx, abort);
   if (!err) {
@@ -123,7 +146,7 @@ const useValidation = (schemas, handler, options = {}) => (ctx) => {
   }
   ctx.status = statusCodes.BAD_REQUEST;
   ctx.body = JSON.parse(xss(JSON.stringify(err)));
-  ctx.log.warn(err, 'Validation fail');
+  ctx.log.warn(err as any, 'Validation fail');
   return ctx;
 };
 

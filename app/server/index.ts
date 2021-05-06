@@ -5,7 +5,14 @@ import { useMiddleware } from './middlewares';
 import { createLogger } from '../utils/logger';
 import { useListeners } from '../listeners';
 import { BrokerConfigurationInterface } from '../interfaces';
-
+import { ConfigurationInterface } from '../interfaces/configurationInterface';
+import { MongoClient } from 'mongodb';
+import { Logger } from 'pino';
+export interface AppInstance {
+  options: ConfigurationInterface;
+  db?: MongoClient;
+  log: Logger;
+}
 /**
  * @type {import('koa')}
  */

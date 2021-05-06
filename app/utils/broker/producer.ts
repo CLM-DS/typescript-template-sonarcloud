@@ -1,10 +1,9 @@
 import { ServiceBusClient } from '@azure/service-bus';
 import { PubSub } from '@google-cloud/pubsub';
-import { Kafka, ProducerRecord } from 'kafkajs';
+import { ArgsBroker, BrokerClientType, BrokerProducerInterface, MessageBroker, MessageBrokerValue, TopicBorker } from '@models/brokerProducerInterface';
+import { BrokerPublisherInterface } from '@models/brokerPublisherInterface';
+import { Kafka, Message, ProducerRecord } from 'kafkajs';
 import xss from 'xss';
-import { BrokerProducerInterface, BrokerPublisherInterface } from '../../interfaces';
-
-type BrokerClientType = Kafka | ServiceBusClient | PubSub | null
 
 /**
  * create producer from event
@@ -41,7 +40,7 @@ const createProducer = (brokerClient: BrokerClientType, brokerOptions: BrokerPub
    */
   const publishMessagePubSub = (
     client: BrokerClientType,
-    record = defaultRecord,
+    record: ArgsBroker & MessageBrokerValue & TopicBorker = defaultRecord,
   ) => {
     /**
      * @type {import("@google-cloud/pubsub").Topic}
@@ -63,7 +62,7 @@ const createProducer = (brokerClient: BrokerClientType, brokerOptions: BrokerPub
 
   const publishMessageServiceBus = (
     client: BrokerClientType,
-    record = defaultRecord,
+    record: ArgsBroker & MessageBrokerValue & TopicBorker = defaultRecord,
   ) => {
     /**
      * @type {import("@azure/service-bus").ServiceBusSender}
@@ -73,28 +72,32 @@ const createProducer = (brokerClient: BrokerClientType, brokerOptions: BrokerPub
       body: JSON.parse(xss(JSON.stringify(record.data))),
     });
   };
-
+  
   const publishMessage = (
     topic: string,
-    message,
-    args = defaultRecord,
+    message: MessageBroker,
+    args: ArgsBroker = defaultRecord,
   ) => {
     switch (brokerOptions.type) {
       case 'kafka':
         return publishMessageKafka(brokerClient, {
           topic,
-          messages: [message],
+          messages: [message as Message],
           acks: args.acks,
           compression: args.compression,
         });
       case 'pubsub':
         return publishMessagePubSub(brokerClient, {
           ...args,
-          ...message,
+          ...message as MessageBrokerValue,
           topic,
         });
       case 'servicebus':
-        return publishMessageServiceBus(brokerClient, message);
+        return publishMessageServiceBus(brokerClient, {
+          ...args,
+          ...message as MessageBrokerValue,
+          topic,
+        });
       default:
         if (brokerClient) {
           throw new Error('Broker client not found');

@@ -1,11 +1,12 @@
-import * as MongoClient from 'mongodb';
+import { FilterQuery, InsertOneWriteOpResult, InsertWriteOpResult, MongoClient, UpdateQuery, UpdateWriteOpResult } from 'mongodb';
+import { ConfigurationInterface } from '../interfaces/configurationInterface';
 import { createLogger } from './logger';
 
 /**
  * Client from Mongo Connection
  * @type {MongoClient}
  */
-let client;
+let client: MongoClient;
 /**
  * Database name
  * @type {string}
@@ -18,11 +19,12 @@ let dataSource = '';
  * @param {boolean} force
  * @returns {MongoClient}
  */
-const connect = (options) => {
+export type Connect = (options: ConfigurationInterface) => MongoClient | undefined;
+const connect: Connect = (options) => {
   const logger = createLogger(options.log);
-  const { mongoUri } = options;
+  const { mongoUri, dataSource: dataSourceName } = options;
 
-  if (!mongoUri) {
+  if (!mongoUri || !dataSourceName) {
     logger.info('no DB URI Detected, skipping connection!');
     return undefined;
   }
@@ -37,7 +39,7 @@ const connect = (options) => {
     if (resp && resp.message) {
       logger.error(resp);
     } else {
-      dataSource = options.dataSource;
+      dataSource = options.dataSource as  string;
       logger.info('DB Connection Success');
     }
   });
@@ -51,7 +53,8 @@ const connect = (options) => {
  * @param {import('mongodb').FilterQuery} query
  * @returns {Promise<*>}
  */
-const findOne = (collection, query = {}) => {
+export type FindOne = <T>(collection: string, query: FilterQuery<T>) => Promise<T>
+const findOne: FindOne = (collection, query = {}) => {
   const database = client.db(dataSource);
   return database.collection(collection).findOne(query);
 };
@@ -62,7 +65,8 @@ const findOne = (collection, query = {}) => {
  * @param {import('mongodb').FilterQuery} query
  * @returns {Promise<[*]>}
  */
-const find = (collection, query = {}) => {
+export type Find = <T>(collection: string, query: FilterQuery<T>) => Promise<T[]>;
+const find: Find = (collection, query = {}) => {
   const database = client.db(dataSource);
   return database.collection(collection).find(query).toArray();
 };
@@ -73,7 +77,8 @@ const find = (collection, query = {}) => {
  * @param {*} data
  * @returns {Promise<import('mongodb').InsertOneWriteOpResult>}
  */
-const create = (collection, data) => {
+export type Create = <T extends { _id: any }>(collection: string, data: T) => Promise<InsertOneWriteOpResult<T>>;
+const create: Create = (collection, data) => {
   const database = client.db(dataSource);
   return database.collection(collection).insertOne(data);
 };
@@ -84,7 +89,8 @@ const create = (collection, data) => {
  * @param {[*]} data
  * @returns {Promise<import('mongodb').InsertWriteOpResult>}
  */
-const createBatch = (collection, data) => {
+export type CreateBatch = <T extends { _id: any }>(collection: string, data: T[]) => Promise<InsertWriteOpResult<T>>;
+const createBatch: CreateBatch = (collection, data) => {
   const database = client.db(dataSource);
   return database.collection(collection).insertMany(data);
 };
@@ -96,7 +102,8 @@ const createBatch = (collection, data) => {
  * @param {*} dataUpdate data partial or complete from document to update
  * @returns {Promise<import('mongodb').UpdateWriteOpResult>}
  */
-const update = (collection, filter, dataUpdate) => {
+export type Update = <T>(collection: string, filter: FilterQuery<T>, data: UpdateQuery<T>) => Promise<UpdateWriteOpResult>;
+const update: Update = (collection, filter, dataUpdate) => {
   const database = client.db(dataSource);
   return database.collection(collection).updateOne(filter, dataUpdate);
 };
@@ -108,12 +115,13 @@ const update = (collection, filter, dataUpdate) => {
  * @param {*} data data partial or complete from document to update
  * @returns {Promise<import('mongodb').UpdateWriteOpResult>}
  */
-const updateBatch = (collection, filter, dataUpdate) => {
+export type UpdateBatch = <T>(collection: string, filter: FilterQuery<T>, data: UpdateQuery<T>) => Promise<UpdateWriteOpResult>;
+const updateBatch: UpdateBatch = (collection, filter, dataUpdate) => {
   const database = client.db(dataSource);
   return database.collection(collection).updateMany(filter, dataUpdate);
 };
-
-const isConnected = () => client.isConnected();
+export type IsConnected = () => boolean;
+const isConnected: IsConnected = () => client.isConnected();
 
 export {
   create,
@@ -127,3 +135,16 @@ export {
   isConnected,
   dataSource,
 };
+
+export interface WrapperDB {
+  create: Create,
+  createBatch: CreateBatch,
+  update: Update,
+  updateBatch: UpdateBatch,
+  find: Find,
+  findOne: FindOne,
+  connect: Connect,
+  client: MongoClient,
+  isConnected: IsConnected,
+  dataSource: string,
+}

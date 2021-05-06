@@ -18,7 +18,7 @@ const loadSecrets = async (options: OptionInterface, mode: string): Promise<Secr
 
     for (let index = 0; index < listSecrets.length; index++) {
       const secret = listSecrets[index];
-      const name = secret.name?.toString();
+      const name = secret.name!.toString();
       let env = options.env.toUpperCase();
       
       if (!env.startsWith('_')) {
@@ -37,7 +37,7 @@ const loadSecrets = async (options: OptionInterface, mode: string): Promise<Secr
         const [version] = await client.accessSecretVersion({
           name: `${name}/versions/${options.version}`,
         });
-        secrets[keyName] = version.payload?.data?.toString();
+        secrets[keyName] = version.payload!.data!.toString();
       }
     }
   } else {

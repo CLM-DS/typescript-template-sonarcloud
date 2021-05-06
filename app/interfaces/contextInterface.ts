@@ -1,8 +1,8 @@
-import { IncomingHttpHeaders, OutgoingHttpHeaders } from 'node:http2';
+import { IncomingHttpHeaders, OutgoingHttpHeaders } from "http";
 
 export interface ContextInterface {
   body: unknown,
-  headers: IncomingHttpHeaders | OutgoingHttpHeaders,
+  headers: OutgoingHttpHeaders | IncomingHttpHeaders,
   status?: number,
   url?: string,
   method?: string, 

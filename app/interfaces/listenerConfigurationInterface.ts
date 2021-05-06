@@ -6,11 +6,11 @@ export interface ListenerConfigurationInterface {
   /**
    * onMessage function
    */
-   onMessage: (message) => void,
+   onMessage: (message: any) => void,
   /**
    * onError function
    */
-  onError: (error) => void,
+  onError: (error: any) => void,
 }
 
 //message and error are unknown because the values can be different depending of the interface 

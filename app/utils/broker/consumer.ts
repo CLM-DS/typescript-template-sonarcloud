@@ -66,7 +66,7 @@ const createConsumer = (brokerClient: BrokerClientType, brokerOptions: BrokerPub
             headers: Object.keys(message.headers || {}).reduce(
               (headers, key) => ({
                 ...headers,
-                [key]: message.headers[key].toString(),
+                [key]: message!.headers![key]!.toString(),
               }),
               {},
             ),
@@ -104,8 +104,8 @@ const createConsumer = (brokerClient: BrokerClientType, brokerOptions: BrokerPub
   const createReceiverServiceBus = async (client: BrokerClientType, options: ListenerConfigurationInterface) => {
     const receiver = (client as ServiceBusClient).createReceiver(options.topic);
     receiver.subscribe({
-      processMessage: options.onMessage,
-      processError: options.onError,
+      processMessage: options.onMessage as any,
+      processError: options.onError as any
     });
   };
 

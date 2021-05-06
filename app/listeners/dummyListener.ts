@@ -6,7 +6,7 @@ import { createContextMessage } from '../utils/broker';
  * @param {import('../utils/broker').PoolBroker} pool
  */
 const createListener = async (pool: MiddlewareInterface['pool'], args: ListenerInterface): Promise<void> => {
-  const broker = pool.getBroker('kafka');
+  const broker = pool?.getBroker('kafka');
 
   // this is code from example
   const listenerConfig = {
@@ -20,7 +20,7 @@ const createListener = async (pool: MiddlewareInterface['pool'], args: ListenerI
   };
   
   // example from broker listener event
-  await broker.consumer.addListener(listenerConfig);
+  await broker?.consumer.addListener(listenerConfig);
 };
 
 export { createListener };

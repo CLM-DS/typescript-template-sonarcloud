@@ -2,7 +2,8 @@ import { Consumer, Kafka } from 'kafkajs';
 import { ServiceBusClient } from '@azure/service-bus';
 import { PubSub } from '@google-cloud/pubsub';
 import { BrokerConsumerInterface, BrokerPublisherInterface, ListenerConfigurationInterface } from '../../interfaces';
-import { BrokerClientType } from '../../types';
+
+type BrokerClientType = Kafka | ServiceBusClient | PubSub | null
 
 /**
  * create consumer

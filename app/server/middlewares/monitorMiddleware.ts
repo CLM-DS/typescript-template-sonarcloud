@@ -1,7 +1,7 @@
-import { Context, Next, Request, Response } from 'koa';
+import { Context, Next, } from 'koa';
 import xss from 'xss';
 
-type typeLog = Response | Request;
+type LogType = 'request' | 'response';
 
 /**
  * @typedef {'response' | 'request'} TypeLog
@@ -25,7 +25,7 @@ type typeLog = Response | Request;
  * @template T
  * @returns {LogData}
  */
-const buildLog = (data, type: typeLog) => ({
+const buildLog = (data, type: LogType) => ({
   ...data,
   type,
   timestamp: new Date().toString(),
@@ -43,7 +43,7 @@ const buildLog = (data, type: typeLog) => ({
  * @param {import('koa')} param0
  * @returns {LogData<ResponseLog>}
  */
-const buildResponseLog = ({ response }) => buildLog({
+const buildResponseLog = ({ response }: Context) => buildLog({
   body: response.body,
   headers: response.headers,
   status: response.status,
@@ -61,7 +61,7 @@ const buildResponseLog = ({ response }) => buildLog({
  * @param {import('koa')} param0
  * @returns {LogData<RequestLog>}
  */
-const buildRequestLog = ({ request }) => buildLog({
+const buildRequestLog = ({ request }: Context) => buildLog({
   body: JSON.parse(xss(JSON.stringify(request.body))),
   headers: request.headers,
   url: request.url,

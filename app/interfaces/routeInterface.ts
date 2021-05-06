@@ -10,7 +10,7 @@ export interface RouteInterface {
   /**
    * Koa Instance
    */
-   app: Koa,
+  app: Koa,
   /**
    * Mongo DataBase URI
    */

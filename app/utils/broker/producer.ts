@@ -3,7 +3,8 @@ import { PubSub } from '@google-cloud/pubsub';
 import { Kafka, ProducerRecord } from 'kafkajs';
 import xss from 'xss';
 import { BrokerProducerInterface, BrokerPublisherInterface } from '../../interfaces';
-import { BrokerClientType } from '../../types';
+
+type BrokerClientType = Kafka | ServiceBusClient | PubSub | null
 
 /**
  * create producer from event

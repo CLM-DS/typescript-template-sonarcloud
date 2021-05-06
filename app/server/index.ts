@@ -4,7 +4,7 @@ import { useRoutes } from '../routes';
 import { useMiddleware } from './middlewares';
 import { createLogger } from '../utils/logger';
 import { useListeners } from '../listeners';
-import { ConfigurationInterface } from '../interfaces';
+import { BrokerConfigurationInterface } from '../interfaces';
 
 /**
  * @type {import('koa')}
@@ -16,7 +16,7 @@ let app: Koa;
  * @param {import('../config').Config} options
  * @returns {import('koa')}
  */
-const startServer = (options: ConfigurationInterface): Koa => {
+const startServer = (options: BrokerConfigurationInterface): Koa => {
   const logger = createLogger();
   logger.info('Server Initialize');
   // create Koa instance

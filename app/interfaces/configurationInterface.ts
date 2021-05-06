@@ -1,3 +1,5 @@
+import { BrokerPublisherInterface } from '.';
+
 export interface ConfigurationInterface {
   /**
    * MicroService Default Prefix
@@ -15,8 +17,11 @@ export interface ConfigurationInterface {
    * Database Name
    */
   dataSource: string,
+}
+
+export interface BrokerConfigurationInterface extends ConfigurationInterface {
   /**
    * Broker Configuration
    */
-  brokerConfig?: any,
+  brokerConfig: BrokerPublisherInterface,
 }

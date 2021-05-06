@@ -4,7 +4,8 @@ import { ServiceBusClient } from '@azure/service-bus';
 import { createProducer } from './producer';
 import { createConsumer } from './consumer';
 import { BrokerInterface, BrokerPublisherInterface, ListenerConfigurationInterface, ListenerInterface, PoolInterface } from '../../interfaces';
-import { BrokerClientType } from '../../types';
+
+type BrokerClientType = Kafka | ServiceBusClient | PubSub | null
 
 /**
  * @typedef {Object} KafkaOption

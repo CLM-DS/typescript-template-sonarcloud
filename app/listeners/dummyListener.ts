@@ -1,4 +1,5 @@
 import { ListenerInterface, MiddlewareInterface } from '../interfaces';
+import { createContextMessage } from '../utils/broker';
 
 /**
  *
@@ -10,12 +11,12 @@ const createListener = async (pool: MiddlewareInterface['pool'], args: ListenerI
   // this is code from example
   const listenerConfig = {
     topic: 'topic-dummy',
-    onMessage: ((args, message) => {
+    onMessage: createContextMessage(args, (message) => {
       args.log.info(message);
-    }).bind,
-    onError: ((args, err) => {
+    }),
+    onError: createContextMessage(args, (err) => {
       args.log.error(err);
-    }).bind,
+    }),
   };
   
   // example from broker listener event

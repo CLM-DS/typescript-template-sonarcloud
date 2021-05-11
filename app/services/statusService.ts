@@ -1,3 +1,4 @@
+import { BrokerConfigurationInterface } from '@models/configurationInterface';
 import { Context } from 'koa'
 import { httpStatus, serverStatus } from '../constants';
 
@@ -6,7 +7,7 @@ import { httpStatus, serverStatus } from '../constants';
  * @returns {boolean}
  */
 const checkDB = (ctx: Context) => {
-  const { config = {}, db } = ctx;
+  const { config = {} as BrokerConfigurationInterface, db } = ctx;
 
   if (config.mongoUri && db) {
     return true;
@@ -24,7 +25,7 @@ const checkDB = (ctx: Context) => {
  * @returns {boolean}
  */
 const checkBroker = (ctx: Context) => {
-  const { config = {}, pool } = ctx;
+  const { config = {} as BrokerConfigurationInterface, pool } = ctx;
 
   if (config.brokerConfig && Object.keys(config.brokerConfig).length > 0 && pool) {
     return true;
@@ -72,7 +73,7 @@ const healthy = (ctx: Context): Context => {
 };
 
 const isAliveDB = (ctx: Context) => {
-  const { config = {}, db } = ctx;
+  const { config = {} as BrokerConfigurationInterface, db } = ctx;
 
   if (config.mongoUri && db && db.isConnected()) {
     return true;
@@ -86,7 +87,7 @@ const isAliveDB = (ctx: Context) => {
 };
 
 const isAlivePool = (ctx: Context) => {
-  const { config = {}, pool } = ctx;
+  const { config = {} as BrokerConfigurationInterface, pool } = ctx;
   const haveBrokerConfig = config.brokerConfig && Object.keys(config.brokerConfig).length > 0;
 
   if (haveBrokerConfig && pool && !pool.haveError()) {

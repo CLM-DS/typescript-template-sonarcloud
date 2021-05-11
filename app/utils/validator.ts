@@ -133,8 +133,8 @@ const useValidationObject = (schemas: SchemeValidator[], obj: any, options: Vali
  * @param {ValidationOption} options
  * @returns {(ctx: Context) => Context}
  */
-export type CallbackKoa = (ctx: Context) => Context;
-const useValidation = (schemas: SchemeValidator[], handler: CallbackKoa, options: ValidatorOptions = {}) => (ctx: Context) => {
+export type CallbackKoa = (ctx: Context) => Context | Promise<Context>;
+const useValidation = (schemas: SchemeValidator[], handler: CallbackKoa, options: ValidatorOptions = {}) => (ctx: Context): Context | Promise<Context> => {
   const { abort = true } = options;
   let err = evaluateSchemes(schemas, ctx, abort);
   if (!err) {

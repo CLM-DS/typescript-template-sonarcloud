@@ -1,4 +1,4 @@
-import { Context, Next, } from 'koa';
+import { Context, Next } from 'koa';
 import xss from 'xss';
 import { ContextInterface } from '../../interfaces';
 
@@ -44,10 +44,11 @@ const buildLog = (data: ContextInterface, type: LogType) => ({
  * @param {import('koa')} param0
  * @returns {LogData<ResponseLog>}
  */
-const buildResponseLog = ({ response }: Context) => buildLog({
+const buildResponseLog = ({ response, eventId }: Context) => buildLog({
   body: response.body,
   headers: response.headers,
   status: response.status,
+  eventId: eventId,
 }, 'response');
 
 /**
@@ -67,6 +68,7 @@ const buildRequestLog = ({ request }: Context) => buildLog({
   headers: request.headers,
   url: request.url,
   method: request.method,
+  eventId: request.headers['x-txref'],
 }, 'request');
 
 /**

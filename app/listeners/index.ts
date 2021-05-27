@@ -1,13 +1,13 @@
 import { createBroker, createPool } from '../utils/broker';
 import { BrokerConfigurationInterface } from '../interfaces/configurationInterface';
-import { AppInstance } from '../server/index';
+import { BrokerPublisherInterface, ListenerInterface } from '../interfaces';
 
 const createBrokers = (options: BrokerConfigurationInterface) => {
   const pool = createPool();
   const entries = Object.entries(options.brokerConfig!);
 
   entries.forEach((entry) => {
-    pool.addBroker(entry[0], createBroker(entry[1]));
+    pool.addBroker(entry[0], createBroker(entry[1] as BrokerPublisherInterface));
   });
 
   return pool;
@@ -17,7 +17,7 @@ const createBrokers = (options: BrokerConfigurationInterface) => {
  * @param {*} args
  * @returns {*}
  */
-const useListeners = (args: AppInstance): ReturnType<typeof createPool> | undefined => {
+const useListeners = (args: ListenerInterface): ReturnType<typeof createPool> | undefined => {
   const { options } = args;
 
   if (

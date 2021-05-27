@@ -6,6 +6,7 @@ import { ListenerConfigurationInterface } from './listenerConfigurationInterface
 import { MiddlewareInterface } from './middlewareInterface';
 import { RouteInterface } from './routeInterface';
 import { BrokerInterface } from './brokerInterface'
+import { BrokerConfigurationInterface } from './configurationInterface';
 import { BrokerPublisherInterface } from './brokerPublisherInterface'
 import { BrokerConsumerInterface } from './brokerConsumerInterface'
 import { BrokerProducerInterface } from './brokerProducerInterface'
@@ -21,6 +22,7 @@ export {
   MiddlewareInterface,
   RouteInterface,
   BrokerInterface,
+  BrokerConfigurationInterface,
   BrokerPublisherInterface,
   BrokerConsumerInterface,
   BrokerProducerInterface,

@@ -1,4 +1,4 @@
-import { Kafka } from 'kafkajs';
+import { Kafka, KafkaConfig } from 'kafkajs';
 import { PubSub }  from '@google-cloud/pubsub';
 import { ServiceBusClient } from '@azure/service-bus';
 import { createProducer } from './producer';
@@ -33,11 +33,11 @@ const createBroker = (brokerOptions: BrokerPublisherInterface): BrokerInterface 
    * create client kafak
    * @param {KafkaOption} options
    */
-  const createKafka = (options: BrokerPublisherInterface['kafkaOption']) => new Kafka(options);
+  const createKafka = (options: BrokerPublisherInterface['kafkaOption']) => new Kafka(options as KafkaConfig);
 
   const createPubSub = () => new PubSub();
 
-  const createServiceBus = (strConn: BrokerPublisherInterface['serviceBusStrCnn']) => new ServiceBusClient(strConn);
+  const createServiceBus = (strConn: BrokerPublisherInterface['serviceBusStrCnn']) => new ServiceBusClient(strConn as string);
   /**
    * @type {boolean|String}
    */

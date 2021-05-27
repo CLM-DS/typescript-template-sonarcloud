@@ -2,6 +2,7 @@ import { Consumer, Kafka } from 'kafkajs';
 import { ServiceBusClient } from '@azure/service-bus';
 import { PubSub } from '@google-cloud/pubsub';
 import { BrokerConsumerInterface, BrokerPublisherInterface, ListenerConfigurationInterface } from '../../interfaces';
+import { KafkaConfigConsumer } from '@models/kafka';
 
 type BrokerClientType = Kafka | ServiceBusClient | PubSub | null
 
@@ -42,7 +43,7 @@ const createConsumer = (brokerClient: BrokerClientType, brokerOptions: BrokerPub
      * @type {import('kafkajs').Consumer}
      */
     const consumer = brokerReceiver || (client as Kafka).consumer({
-      groupId: brokerOptions.kafkaOption.groupId,
+      groupId: (brokerOptions.kafkaOption as KafkaConfigConsumer).groupId as string,
     });
 
     if (!brokerReceiver) {
@@ -58,21 +59,29 @@ const createConsumer = (brokerClient: BrokerClientType, brokerOptions: BrokerPub
     if (!brokerReceiver) {
       await consumer.run({
         eachMessage: async ({ topic, partition, message }) => {
-          (client as Kafka).logger().debug('Message received', {
-            topic,
-            partition,
-            offset: message.offset,
-            timestamp: message.timestamp,
-            headers: Object.keys(message.headers || {}).reduce(
+          let headers = {};
+
+          if (message.headers) {
+            headers = Object.keys(message.headers).reduce(
               (headers, key) => ({
                 ...headers,
                 [key]: message!.headers![key]!.toString(),
               }),
               {},
-            ),
-            key: message.key.toString(),
+            );
+          }
+
+          const args = {
+            topic,
+            partition,
+            offset: message.offset,
+            timestamp: message.timestamp,
+            headers: headers,
+            key: (message.key || '').toString(),
             value: (message.value || '').toString(),
-          });
+          };
+
+          (client as Kafka).logger().debug('Message received', args);
 
           try {
             messageProcessor[topic].onMessage(message);

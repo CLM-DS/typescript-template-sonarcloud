@@ -1,4 +1,4 @@
-import { ConfigurationInterface } from '.';
+import { BrokerConfigurationInterface } from '.';
 import { wrapperDB } from '../utils';
 import { createLogger } from '../utils/logger';
 
@@ -6,7 +6,7 @@ export interface ListenerInterface {
   /**
    * MicroService Default Prefix
    */
-  options: ConfigurationInterface,
+  options: BrokerConfigurationInterface,
   /**
    * Listening Port Number
    */

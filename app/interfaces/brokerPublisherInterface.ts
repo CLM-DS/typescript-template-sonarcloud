@@ -5,8 +5,8 @@ interface KafkaOption extends KafkaConfig {
 }
 
 export interface BrokerConfig {
-   [alias: string]: BrokerPublisherInterface
- }
+  [alias: string]: BrokerPublisherInterface
+}
 
 export interface BrokerPublisherInterface {
   /**
@@ -16,9 +16,9 @@ export interface BrokerPublisherInterface {
   /**
    *  Kafka Option
    */
-  kafkaOption: KafkaOption,
+  kafkaOption?: KafkaOption,
   /**
    * Service Bus
    */
-  serviceBusStrCnn: string,
+  serviceBusStrCnn?: string,
 }

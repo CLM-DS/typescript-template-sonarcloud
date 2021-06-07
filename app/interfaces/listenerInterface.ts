@@ -10,7 +10,7 @@ export interface ListenerInterface {
   /**
    * Listening Port Number
    */
-  db: typeof wrapperDB,
+  db?: typeof wrapperDB,
   /**
    * Mongo DataBase URI
    */

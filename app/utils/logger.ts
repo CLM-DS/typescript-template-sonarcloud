@@ -7,9 +7,9 @@ const createLogger = (optionsIn?: LoggerOptions): ReturnType<typeof Pino> => {
   const enable = !!process.env.LOG_ENABLED;
   const options = optionsIn || {
     enabled:
-      enable || ['prd', 'qa'].includes(env),
+      enable || ['production', 'qa'].includes(env),
     name,
-    level: process.env.LOG_LEVEL || (env === 'prd' ? 'info' : 'debug'),
+    level: process.env.LOG_LEVEL || (env === 'production' ? 'info' : 'debug'),
     customLevels: { healthy: 0 },
     redact: [],
   };

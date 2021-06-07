@@ -6,6 +6,7 @@ import { loggerMiddleware } from './loggerMiddleware';
 import { mongoMiddleware } from './mongoMiddleware';
 import { monitorMiddleware } from './monitorMiddleware';
 import { brokerMiddleware } from './brokerMiddleware';
+import { interceptorMiddleware } from './interceptorMiddleware';
 import { MiddlewareInterface } from '../../interfaces';
 
 /**
@@ -45,10 +46,9 @@ const useMiddleware = (args: MiddlewareInterface): Koa => {
   app.use(errorMiddleware(app));
   app.use(configMiddleware(options));
   app.use(loggerMiddleware());
+  app.use(interceptorMiddleware());
   app.use(monitorMiddleware());
-  // added client mongo to middleware
   app.use(mongoMiddleware(db));
-  // added instance to managed broker
   app.use(brokerMiddleware(pool));
   return app;
 };

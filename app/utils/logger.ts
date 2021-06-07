@@ -2,14 +2,14 @@ import Pino from 'pino';
 import { LoggerOptions } from 'pino';
 
 const createLogger = (optionsIn?: LoggerOptions): ReturnType<typeof Pino> => {
-  const env = process.env.APP_ENV || 'development';
+  const env = process.env.APP_ENV || 'qa';
   const name = process.env.APP_NAME;
   const enable = !!process.env.LOG_ENABLED;
   const options = optionsIn || {
     enabled:
-      enable || ['production', 'development'].includes(env),
+      enable || ['prd', 'qa'].includes(env),
     name,
-    level: process.env.LOG_LEVEL || (env === 'production' ? 'info' : 'debug'),
+    level: process.env.LOG_LEVEL || (env === 'prd' ? 'info' : 'debug'),
     customLevels: { healthy: 0 },
     redact: [],
   };

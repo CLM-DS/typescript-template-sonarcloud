@@ -1,6 +1,6 @@
 export const createMockRequest = {
   headers: {
-    'x-txRef': 'a',
+    'x-txref': 'a',
     'x-country': 'b',
     'x-commerce': 'c',
     'x-chref': 'd',

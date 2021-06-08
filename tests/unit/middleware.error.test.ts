@@ -1,14 +1,13 @@
 import { statusCodes } from '../../app/constants/httpStatus';
 import { errorMiddleware } from '../../app/server/middlewares/errorMiddleware';
 import { createMockContext } from '@shopify/jest-koa-mocks';
-import { createMockServer } from '../mocks';
-import { startServer } from '../../app/server';
+import Koa from 'koa';
 
 describe('Test Cases: ErrorMiddleware', () => {
   it('Test Case error call', async () => {
-    const config = createMockServer();
-    const app = await startServer(config);
+    const app = new Koa();
     const ctxMock = createMockContext();
+    ctxMock.app = app;
     const handlerError = () => {
       throw new Error('Mock Error');
     };
@@ -16,7 +15,7 @@ describe('Test Cases: ErrorMiddleware', () => {
     try {
       await errorMiddleware(app)(ctxMock, handlerError);
     } catch (error) {
-      // console.log(error);
+      console.log(error);
     }
 
     expect(ctxMock.status).toEqual(statusCodes.INTERNAL_SERVER_ERROR);

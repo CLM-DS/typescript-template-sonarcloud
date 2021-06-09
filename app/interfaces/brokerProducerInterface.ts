@@ -11,7 +11,7 @@ export interface BrokerProducerInterface {
 export type MessageBrokerValue = {
   data: string | any;
 };
-export type TopicBorker = {
+export type TopicBroker = {
   topic: string
 }
 export type ArgsBroker = {

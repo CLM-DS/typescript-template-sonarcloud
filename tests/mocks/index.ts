@@ -9,5 +9,5 @@ export {
   createMockPool,
   createMockConfig,
   createMockListener,
-  createMockServer
+  createMockServer,
 };

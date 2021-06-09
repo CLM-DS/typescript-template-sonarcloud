@@ -1,4 +1,3 @@
-import { Context } from 'koa';
 import { Logger } from 'pino';
 import { WrapperDB } from '../utils/wrapperDB';
 import { PoolInterface } from './poolInterface';

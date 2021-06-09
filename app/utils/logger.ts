@@ -1,5 +1,4 @@
-import Pino from 'pino';
-import { LoggerOptions } from 'pino';
+import Pino, { LoggerOptions } from 'pino';
 
 const createLogger = (optionsIn?: LoggerOptions): ReturnType<typeof Pino> => {
   const env = process.env.APP_ENV || 'qa';

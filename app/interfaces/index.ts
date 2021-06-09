@@ -1,4 +1,4 @@
-import { ConfigurationInterface } from './configurationInterface';
+import { ConfigurationInterface, BrokerConfigurationInterface } from './configurationInterface';
 import { SecretInterface } from './secretInterface';
 import { OptionInterface } from './optionInterface';
 import { ListenerInterface } from './listenerInterface';
@@ -6,7 +6,6 @@ import { ListenerConfigurationInterface } from './listenerConfigurationInterface
 import { MiddlewareInterface } from './middlewareInterface';
 import { RouteInterface } from './routeInterface';
 import { BrokerInterface } from './brokerInterface'
-import { BrokerConfigurationInterface } from './configurationInterface';
 import { BrokerPublisherInterface } from './brokerPublisherInterface'
 import { BrokerConsumerInterface } from './brokerConsumerInterface'
 import { BrokerProducerInterface } from './brokerProducerInterface'

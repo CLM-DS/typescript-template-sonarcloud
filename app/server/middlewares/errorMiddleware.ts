@@ -1,5 +1,4 @@
-import Koa from 'koa';
-import { Context, Next } from 'koa';
+import Koa, { Context, Next } from 'koa';
 import { statusCodes } from '../../constants/httpStatus';
 import { createLogger } from '../../utils/logger';
 

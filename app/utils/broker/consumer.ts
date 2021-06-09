@@ -65,7 +65,7 @@ const createConsumer = (brokerClient: BrokerClientType, brokerOptions: BrokerPub
             headers = Object.keys(message.headers).reduce(
               (headers, key) => ({
                 ...headers,
-                [key]: message!.headers![key]!.toString(),
+                [key]: message.headers![key]!.toString(),
               }),
               {},
             );

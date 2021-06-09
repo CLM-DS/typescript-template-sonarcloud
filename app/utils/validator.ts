@@ -67,7 +67,7 @@ export type EvaluateSchemes = (schemas: SchemeValidator[], ctx: Context, abort?:
  * @param {Boolean} [abort=true]
  */
 const evaluateSchemes: EvaluateSchemes = (schemas, ctx, abort = true) => {
-  const err = schemas.reduce<SchemeError>((acc, item) => {
+  return schemas.reduce<SchemeError>((acc, item) => {
     if (acc && abort) {
       return acc;
     }
@@ -87,7 +87,6 @@ const evaluateSchemes: EvaluateSchemes = (schemas, ctx, abort = true) => {
     setProperty(property, value, ctx);
     return acc;
   }, undefined);
-  return err;
 };
 
 /**

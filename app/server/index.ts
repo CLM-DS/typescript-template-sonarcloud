@@ -6,10 +6,9 @@ import { createLogger } from '../utils/logger';
 import { useListeners } from '../listeners';
 import { BrokerConfigurationInterface } from '../interfaces/configurationInterface';
 import { Logger } from 'pino';
-import { WrapperDB } from '../utils/wrapperDB';
 export interface AppInstance {
   options: BrokerConfigurationInterface;
-  db?: WrapperDB;
+  db?: db.WrapperDB;
   log: Logger;
 }
 /**

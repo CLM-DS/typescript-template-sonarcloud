@@ -3,6 +3,7 @@ import { createMockPool } from './mockPool';
 import { createMockConfig } from './mockConfig';
 import { createMockListener } from './mockListener';
 import { createMockServer } from './mockServer';
+import { createMockLogger } from './mockLogger';
 
 export {
   createMockRequest,
@@ -10,4 +11,5 @@ export {
   createMockConfig,
   createMockListener,
   createMockServer,
+  createMockLogger
 };

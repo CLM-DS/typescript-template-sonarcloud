@@ -1,6 +1,6 @@
 import { ServiceBusClient } from '@azure/service-bus';
 import { PubSub } from '@google-cloud/pubsub';
-import { ArgsBroker, BrokerClientType, BrokerProducerInterface, MessageBroker, MessageBrokerValue, TopicBorker } from '@models/brokerProducerInterface';
+import { ArgsBroker, BrokerClientType, BrokerProducerInterface, MessageBroker, MessageBrokerValue, TopicBroker } from '@models/brokerProducerInterface';
 import { BrokerPublisherInterface } from '@models/brokerPublisherInterface';
 import { Kafka, Message, ProducerRecord } from 'kafkajs';
 import xss from 'xss';
@@ -40,7 +40,7 @@ const createProducer = (brokerClient: BrokerClientType, brokerOptions: BrokerPub
    */
   const publishMessagePubSub = (
     client: BrokerClientType,
-    record: ArgsBroker & MessageBrokerValue & TopicBorker = defaultRecord,
+    record: ArgsBroker & MessageBrokerValue & TopicBroker = defaultRecord,
   ) => {
     /**
      * @type {import("@google-cloud/pubsub").Topic}
@@ -62,7 +62,7 @@ const createProducer = (brokerClient: BrokerClientType, brokerOptions: BrokerPub
 
   const publishMessageServiceBus = (
     client: BrokerClientType,
-    record: ArgsBroker & MessageBrokerValue & TopicBorker = defaultRecord,
+    record: ArgsBroker & MessageBrokerValue & TopicBroker = defaultRecord,
   ) => {
     /**
      * @type {import("@azure/service-bus").ServiceBusSender}

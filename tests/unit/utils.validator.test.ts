@@ -2,14 +2,13 @@ import joi from 'joi';
 import { httpStatus } from '../../app/constants';
 import { useValidation } from '../../app/utils/validator';
 import { createMockContext } from '@shopify/jest-koa-mocks';
-import { createLogger } from '../../app/utils/logger';
 import { Context } from 'koa';
-import { createMockRequest } from '../mocks';
+import { createMockLogger, createMockRequest } from '../mocks';
 
 describe('Test Cases: validator', () => {
   it('Test schema validation failure', () => {
     const ctxMock = createMockContext();
-    ctxMock.log = createLogger();
+    ctxMock.log = createMockLogger;
     const scheme = joi.object({
       orderId: joi.required(),
     });
@@ -24,7 +23,7 @@ describe('Test Cases: validator', () => {
 
   it('Test schema validation success', () => {
     const ctxMock = createMockContext({...createMockRequest});
-    ctxMock.log = createLogger();
+    ctxMock.log = createMockLogger;
     const scheme = joi.object({
       orderId: joi.required(),
     });
@@ -42,7 +41,7 @@ describe('Test Cases: validator', () => {
 
   it('Test schema validation failure on body property', () => {
     const ctxMock = createMockContext({...createMockRequest});
-    ctxMock.log = createLogger();
+    ctxMock.log = createMockLogger;
     const scheme = joi.object({
       orderId: joi.required(),
     });
@@ -63,7 +62,7 @@ describe('Test Cases: validator', () => {
 
   it('Test schema validation failure on request.body property', () => {
     const ctxMock = createMockContext();
-    ctxMock.log = createLogger();
+    ctxMock.log = createMockLogger;
     const scheme = joi.object({
       orderId: joi.required(),
     });

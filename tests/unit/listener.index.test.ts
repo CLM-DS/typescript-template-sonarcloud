@@ -1,13 +1,12 @@
 import { useListeners } from '../../app/listeners';
 import { createPool } from '../../app/utils/broker';
-import { createLogger } from '../../app/utils/logger';
-import { createMockListener, createMockPool } from '../mocks';
+import { createMockListener, createMockLogger, createMockPool } from '../mocks';
 
 jest.mock('../../app/utils/broker');
 
 describe('Test Cases Listeners Broker', () => {
   it('Test listener config empty pool', () => {
-    const pool = useListeners({ options: {}, log: createLogger() });
+    const pool = useListeners({ options: {}, log: createMockLogger });
     expect(pool).not.toBeDefined();
   });
 

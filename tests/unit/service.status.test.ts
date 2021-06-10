@@ -1,8 +1,7 @@
 import { httpStatus } from '../../app/constants';
 import { statusService } from '../../app/services';
 import { createMockContext } from '@shopify/jest-koa-mocks';
-import { createLogger } from '../../app/utils/logger';
-import { createMockConfig, createMockPool } from '../mocks';
+import { createMockConfig, createMockLogger, createMockPool } from '../mocks';
 import * as db from '../../app/utils/wrapperDB';
 
 jest.mock('../../app/utils/wrapperDB');
@@ -10,7 +9,7 @@ jest.mock('../../app/utils/wrapperDB');
 describe('Test Cases: Status Service', () => {
   it('Test Status Healthy Success', () => {
     const ctxMock = createMockContext();
-    ctxMock.log = createLogger();
+    ctxMock.log = createMockLogger;
     const res = statusService.healthy(ctxMock);
     expect(res.status).toEqual(httpStatus.statusCodes.OK);
   });

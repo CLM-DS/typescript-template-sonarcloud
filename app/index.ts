@@ -13,6 +13,7 @@ const run = async () => {
     keys: [],
   }
   const mode = process.env.MODE || 'offline'
+  console.log("mode: " + mode)
   const secrets = await loadSecrets(options, mode);
   const config = loadConfig(secrets);
   

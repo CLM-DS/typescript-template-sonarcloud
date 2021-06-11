@@ -2,7 +2,7 @@
   "name": "rest-boilerplate-ts",
   "version": "1.0.0",
   "description": "Template to build rest api",
-  "main": "dist/index.js",
+  "main": "app/index.ts",
   "scripts": {
     "test": "jest",
     "build": "ttsc -p .",
@@ -13,7 +13,7 @@
   "pre-commit": [
     "lint"
   ],
-  "author": "Yanny Hernández <yhernandez@clmconsultores.com>",
+  "author": "Fernando Ochoa <fochoa@clmdigitalsolutions.com>",
   "license": "MIT",
   "devDependencies": {
     "@shopify/jest-koa-mocks": "^3.0.0",

@@ -1,7 +1,5 @@
 
 import kafkajs from 'kafkajs';
-// import pubsub from '@google-cloud/pubsub';
-// import servicebus from '@azure/service-bus';
 import { createPool, createBroker } from '../../app/utils/broker';
 
 jest.mock('kafkajs');
@@ -28,41 +26,4 @@ describe('Test Cases: Broker utils', () => {
     expect(pool).toBeDefined();
     expect(record).toEqual('response');
   });
-
-  /*it('Test Case Create Broker PubSub, producer', async () => { 
-    pubsub.PubSub.mockImplementationOnce(() => ({
-      topic: jest.fn(() => ({
-        publish: jest.fn(() => 'id'),
-      })),
-    }));
-    const brokerPubSub = createBroker({ type: 'pubsub' });
-    const messageId = await brokerPubSub.producer.publish('', { data: {} });
-    expect(messageId).toEqual('id');
-  });*/
-
-  /*it('Test Case Create Broker Servicebus, producer', async () => {
-    const servicebusMock = servicebus as jest.Mocked<typeof servicebus>;
-    servicebusMock.ServiceBusClient.mockReturnValueOnce({
-      createSender: jest.fn().mockReturnValueOnce({
-        sendMessages: jest.fn(() => Promise.resolve()),
-        createMessageBatch: jest.fn(),
-        isClosed: false,
-        scheduleMessages: jest.fn(),
-        cancelScheduledMessages: jest.fn(),
-        entityPath: '',
-        close: jest.fn()
-      }),
-      fullyQualifiedNamespace: '',
-      createReceiver: jest.fn(),
-      acceptSession: jest.fn(),
-      acceptNextSession: jest.fn(),
-      close: jest.fn(),
-    });
-    const pool = createPool();    
-    const brokerServiceBus = createBroker({ type: 'servicebus', serviceBusStrCnn: '' });
-    pool.addBroker('servicebus', brokerServiceBus);
-    const record = await brokerServiceBus.producer.publish('topic', { value: 'test' }, {});
-    expect(pool).toBeDefined();
-    expect(record).toEqual('response');
-  });*/
 });

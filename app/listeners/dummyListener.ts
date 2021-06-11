@@ -1,5 +1,5 @@
+import { KafkaMessage } from 'kafkajs';
 import { ListenerInterface, PoolInterface } from '../interfaces';
-import { createContextMessage } from '../utils/broker';
 
 /**
  *
@@ -11,12 +11,12 @@ const createListener = async (pool: PoolInterface, args: ListenerInterface): Pro
   // this is code from example
   const listenerConfig = {
     topic: 'topic-dummy',
-    onMessage: createContextMessage(args, (message) => {
+    onMessage: (message: KafkaMessage) => {
       args.log.info(message);
-    }),
-    onError: createContextMessage(args, (err) => {
+    },
+    onError:  (err: Error) => {
       args.log.error(err);
-    }),
+    },
   };
   
   // example from broker listener event

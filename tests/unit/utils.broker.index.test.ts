@@ -1,5 +1,4 @@
 import kafkajs from 'kafkajs';
-// import pubsub from '@google-cloud/pubsub';
 import { createPool, createBroker } from '../../app/utils/broker';
 
 jest.mock('kafkajs');
@@ -42,21 +41,6 @@ describe('Test Cases: Broker utils', () => {
     expect(() => { pool.getBroker('kafka'); }).not.toThrow();
     expect(await brokerKafka.check()).toEqual(true);
   });
-
-  /*it('Test Case Create Broker PubSub check success', async () => {
-    const pubSubMock = pubsub as jest.Mocked<typeof pubsub>;
-    pubSubMock.PubSub.mockImplementationOnce(() => ({
-      auth: {
-        getAccessToken: jest.fn(() => Promise.resolve('')),
-      },
-    }));
-    const pool = createPool();
-    const brokerPubSub = createBroker({ type: 'pubsub' });
-    pool.addBroker('pubsub', brokerPubSub);
-    expect(pool).toBeDefined();
-    expect(() => { pool.getBroker('pubsub'); }).not.toThrow();
-    expect(await brokerPubSub.check()).toEqual(true);
-  });*/
 
   it('Test Case Create Broker ServiceBus check success', async () => {
     const pool = createPool();

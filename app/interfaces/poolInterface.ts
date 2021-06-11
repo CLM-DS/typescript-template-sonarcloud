@@ -16,7 +16,7 @@ export interface PoolInterface {
   /**
    * Set Error Function
    */
-  setError: (error: boolean) => void,
+  setError: (error: boolean | string) => void,
   /**
    * Have Error Function
    */

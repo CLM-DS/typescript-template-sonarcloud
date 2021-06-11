@@ -3,7 +3,7 @@ import { PubSub }  from '@google-cloud/pubsub';
 import { ServiceBusClient } from '@azure/service-bus';
 import { createProducer } from './producer';
 import { createConsumer } from './consumer';
-import { BrokerInterface, BrokerPublisherInterface, ListenerConfigurationInterface, ListenerInterface, PoolInterface } from '../../interfaces';
+import { BrokerInterface, BrokerPublisherInterface, PoolInterface } from '../../interfaces';
 
 type BrokerClientType = Kafka | ServiceBusClient | PubSub | null
 
@@ -149,8 +149,8 @@ const createPool = (): PoolInterface => {
   };
   const map = (func: (arg0: BrokerInterface) => BrokerInterface) => aliases.map((alias) => func(pool[alias]));
 
-  let err = false;
-  const setError = (error: boolean) => {
+  let err: boolean | string = false;
+  const setError = (error: boolean | string) => {
     err = error;
   };
   const haveError = () => err;
@@ -163,18 +163,4 @@ const createPool = (): PoolInterface => {
   };
 };
 
-/**
- * Injects in each message the information of connection to database and configurations,
- * in the context key
- * @param {*} args object with, db, log and config from app
- * @param {*} onMessage handler to processing event received
- * @deprecated
- */
- const createContextMessage = (args: ListenerInterface, onMessage: ListenerConfigurationInterface['onMessage']) => (msg: any) => {
-  const msgMutable = msg;
-  msgMutable.context = args;
-  
-  return onMessage(msgMutable);
-};
-
-export { createBroker, createPool, createContextMessage };
+export { createBroker, createPool };

@@ -11,7 +11,7 @@ const createListener = async (pool: PoolInterface, args: ListenerInterface): Pro
   // this is code from example
   const listenerConfig = {
     topic: 'topic-dummy',
-    onMessage: (message: KafkaMessage) => {
+    onMessage: async (message: KafkaMessage) => {
       args.log.info(message);
     },
     onError:  (err: Error) => {

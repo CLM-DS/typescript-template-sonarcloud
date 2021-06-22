@@ -33,6 +33,7 @@
     "@types/mongodb": "^3.6.12",
     "@types/node": "^15.0.2",
     "@types/pino": "^6.3.8",
+    "@types/uuid": "^8.3.0",
     "@typescript-eslint/eslint-plugin": "^4.27.0",
     "@typescript-eslint/parser": "^4.22.1",
     "@zerollup/ts-transform-paths": "^1.7.18",
@@ -64,7 +65,7 @@
     "koa-router": "^9.4.0",
     "mongodb": "^3.6.2",
     "pino": "^6.7.0",
-    "uuidv4": "^6.2.8",
+    "uuid": "^8.3.2",
     "xss": "^1.0.8"
   }
 }

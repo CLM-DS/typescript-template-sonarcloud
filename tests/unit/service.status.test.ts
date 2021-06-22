@@ -1,6 +1,6 @@
+import { createMockContext } from '@shopify/jest-koa-mocks';
 import { httpStatus } from '../../app/constants';
 import { statusService } from '../../app/services';
-import { createMockContext } from '@shopify/jest-koa-mocks';
 import { createMockConfig, createMockLogger, createMockPool } from '../mocks';
 import * as db from '../../app/utils/wrapperDB';
 
@@ -29,7 +29,7 @@ describe('Test Cases: Status Service', () => {
 
   it('Test Status Alive Failure', () => {
     const ctxMock = createMockContext();
-    ctxMock.config = createMockConfig; 
+    ctxMock.config = createMockConfig;
     const res = statusService.alive(ctxMock);
     expect(res.status).toEqual(httpStatus.statusCodes.SERVICE_UNAVAILABLE);
   });

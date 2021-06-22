@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+import { MongoClient } from 'mongodb';
 import mongoMocks from '../mocks/mockMongo';
 import { mockConfigSimple } from '../mocks/mockMongoConfig';
 import * as wrapper from '../../app/utils/wrapperDB';
-import { MongoClient } from 'mongodb';
+
 jest.mock('mongodb');
 
 describe('Test Cases: wrapperDB', () => {
@@ -20,11 +23,13 @@ describe('Test Cases: wrapperDB', () => {
     const data = await wrapper.findOne('test', {});
     expect(data).not.toEqual(undefined);
   });
+
   it('Test Find', async () => {
     db.mockReturnValueOnce(mongoMocks.mockFind);
     const data = await wrapper.find('test', {});
     expect(data).not.toEqual(undefined);
   });
+
   it('Test Create', async () => {
     db.mockReturnValueOnce(mongoMocks.mockInsertOne);
     const data = await wrapper.create('', { test: 'test', _id: '' });

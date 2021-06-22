@@ -1,11 +1,11 @@
 import { Kafka, KafkaConfig } from 'kafkajs';
-import { PubSub }  from '@google-cloud/pubsub';
+import { PubSub } from '@google-cloud/pubsub';
 import { ServiceBusClient } from '@azure/service-bus';
 import { createProducer } from './producer';
 import { createConsumer } from './consumer';
 import { BrokerInterface, BrokerPublisherInterface, PoolInterface } from '../../interfaces';
 
-type BrokerClientType = Kafka | ServiceBusClient | PubSub | null
+type BrokerClientType = Kafka | ServiceBusClient | PubSub | null;
 
 /**
  * @typedef {Object} KafkaOption
@@ -70,12 +70,12 @@ const createBroker = (brokerOptions: BrokerPublisherInterface): BrokerInterface 
   const brokerProducer = createProducer(brokerClient, brokerOptions);
   const brokerConsumer = createConsumer(brokerClient, brokerOptions);
   let producerKafka;
-  
+
   const check = async () => {
     if (!brokerClient) {
       throw new Error('Broker client not found');
     }
-    
+
     switch (brokerOptions.type) {
       case 'kafka':
         producerKafka = (brokerClient as Kafka).producer();
@@ -147,7 +147,9 @@ const createPool = (): PoolInterface => {
     }
     return broker;
   };
-  const map = (func: (arg0: BrokerInterface) => BrokerInterface) => aliases.map((alias) => func(pool[alias]));
+  const map = (func: (arg0: BrokerInterface) => BrokerInterface) => aliases.map(
+    (alias) => func(pool[alias]),
+  );
 
   let err: boolean | string = false;
   const setError = (error: boolean | string) => {

@@ -11,12 +11,12 @@ const run = async () => {
     project: process.env.PROJECT || '',
     version: process.env.VERSION || 'latest',
     keys: [],
-  }
-  const mode = process.env.MODE || 'offline'
+  };
+  const mode = process.env.MODE || 'offline';
   const secrets = await loadSecrets(options, mode);
   const config = loadConfig(secrets);
-  
+
   startServer(config);
 };
 
-run();
+void run();

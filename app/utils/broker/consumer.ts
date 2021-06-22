@@ -2,9 +2,9 @@ import { Consumer, Kafka } from 'kafkajs';
 import { ServiceBusClient } from '@azure/service-bus';
 import { PubSub } from '@google-cloud/pubsub';
 import { BrokerConsumerInterface, BrokerPublisherInterface, ListenerConfigurationInterface } from '../../interfaces';
-import { KafkaConfigConsumer } from '@models/kafka';
+import { KafkaConfigConsumer } from '../../interfaces/kafka';
 
-type BrokerClientType = Kafka | ServiceBusClient | PubSub | null
+type BrokerClientType = Kafka | ServiceBusClient | PubSub | null;
 
 /**
  * create consumer
@@ -12,7 +12,9 @@ type BrokerClientType = Kafka | ServiceBusClient | PubSub | null
  * @param {*} brokerOptions
  * @returns {Consumer}
  */
-const createConsumer = (brokerClient: BrokerClientType, brokerOptions: BrokerPublisherInterface): BrokerConsumerInterface => {
+const createConsumer = (
+  brokerClient: BrokerClientType, brokerOptions: BrokerPublisherInterface,
+): BrokerConsumerInterface => {
   /**
    * @callback messageReceived
    * @param {*} message
@@ -38,7 +40,9 @@ const createConsumer = (brokerClient: BrokerClientType, brokerOptions: BrokerPub
    * @param {Kafka} client
    * @param {BrokerOptionSubscriber} options
    */
-  const createReceiverKafka = async (client: BrokerClientType, options: ListenerConfigurationInterface) => {
+  const createReceiverKafka = async (
+    client: BrokerClientType, options: ListenerConfigurationInterface,
+  ) => {
     /**
      * @type {import('kafkajs').Consumer}
      */
@@ -63,9 +67,10 @@ const createConsumer = (brokerClient: BrokerClientType, brokerOptions: BrokerPub
 
           if (message.headers) {
             headers = Object.keys(message.headers).reduce(
+              // eslint-disable-next-line @typescript-eslint/no-shadow
               (headers, key) => ({
                 ...headers,
-                [key]: message.headers![key]!.toString(),
+                [key]: message.headers?.[key]?.toString(),
               }),
               {},
             );
@@ -76,7 +81,7 @@ const createConsumer = (brokerClient: BrokerClientType, brokerOptions: BrokerPub
             partition,
             offset: message.offset,
             timestamp: message.timestamp,
-            headers: headers,
+            headers,
             key: (message.key || '').toString(),
             value: (message.value || '').toString(),
           };
@@ -86,7 +91,7 @@ const createConsumer = (brokerClient: BrokerClientType, brokerOptions: BrokerPub
           try {
             messageProcessor[topic].onMessage(message);
           } catch (err) {
-            messageProcessor[topic].onError(message);
+            messageProcessor[topic].onError(err);
           }
         },
       });
@@ -99,7 +104,9 @@ const createConsumer = (brokerClient: BrokerClientType, brokerOptions: BrokerPub
    * @param {PubSub} client
    * @param {ListenerOption} options
    */
-  const createReceiverPubSub = (client: BrokerClientType, options: ListenerConfigurationInterface) => {
+  const createReceiverPubSub = (
+    client: BrokerClientType, options: ListenerConfigurationInterface,
+  ) => {
     const subscription = (client as PubSub).subscription(options.topic);
     subscription.addListener('message', options.onMessage);
     subscription.addListener('error', options.onError);
@@ -110,11 +117,13 @@ const createConsumer = (brokerClient: BrokerClientType, brokerOptions: BrokerPub
    * @param {ServiceBusClient} client
    * @param {ListenerOption} options
    */
-  const createReceiverServiceBus = async (client: BrokerClientType, options: ListenerConfigurationInterface) => {
+  const createReceiverServiceBus = (
+    client: BrokerClientType, options: ListenerConfigurationInterface,
+  ) => {
     const receiver = (client as ServiceBusClient).createReceiver(options.topic);
     receiver.subscribe({
-      processMessage: options.onMessage as any,
-      processError: options.onError as any
+      processMessage: options.onMessage as never,
+      processError: options.onError as never,
     });
   };
 
@@ -131,7 +140,7 @@ const createConsumer = (brokerClient: BrokerClientType, brokerOptions: BrokerPub
         createReceiverPubSub(brokerClient, options);
         break;
       case 'servicebus':
-        await createReceiverServiceBus(brokerClient, options);
+        createReceiverServiceBus(brokerClient, options);
         break;
       default:
         if (brokerClient) {

@@ -1,7 +1,6 @@
 export const mockConfigSimple = {
-    mongoUri: 'mongoDb://localhost',
-    prefix: '/',
-    dataSource: 'dummy',
-    port: 3000,
+  mongoUri: 'mongoDb://localhost',
+  prefix: '/',
+  dataSource: 'dummy',
+  port: 3000,
 };
-

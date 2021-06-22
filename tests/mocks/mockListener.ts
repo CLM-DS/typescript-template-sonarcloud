@@ -1,11 +1,11 @@
-import { createMockLogger } from '.';
+import { createMockLogger } from './mockLogger';
 
 export const createMockListener = {
   log: createMockLogger,
   options: {
     brokerConfig: {
       kafkaConsumer: {
-        type: 'kafka' as const
+        type: 'kafka' as const,
       },
     },
   },

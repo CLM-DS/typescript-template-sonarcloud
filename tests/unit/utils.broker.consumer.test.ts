@@ -1,8 +1,9 @@
 import kafkajs, { ConsumerRunConfig } from 'kafkajs';
 import { PubSub } from '@google-cloud/pubsub';
 import { ServiceBusClient } from '@azure/service-bus';
-import { createPool, createBroker }  from '../../app/utils/broker';
+import { createPool, createBroker } from '../../app/utils/broker';
 import { messageMock } from '../mocks/mockMessage';
+
 const kafkaDependecyMocked = <jest.Mock<kafkajs.Kafka>>kafkajs.Kafka;
 const pubsubDependencyMocked = <jest.Mock<PubSub>><unknown>PubSub;
 const servicebusDependencyMocked = <jest.Mock<ServiceBusClient>>ServiceBusClient;
@@ -23,14 +24,17 @@ it('Test Case Create Broker Kafka, consumer', async () => {
   consumerKafkaMock.mockReturnValueOnce(consumerObj);
   kafkaDependecyMocked.mockImplementationOnce(() => ({
     consumer: consumerKafkaMock,
-  } as any));
-  const broker = createBroker({ type: 'kafka', kafkaOption: {} as any });
+    logger: jest.fn().mockReturnValueOnce({
+      debug: jest.fn(),
+    }),
+  } as never));
+  const brokerKafka = createBroker({ type: 'kafka', kafkaOption: { groupId: '123', brokers: ['broker'] } });
   const spy = jest.spyOn(consumerObj, 'connect');
-  await broker.consumer.addListener({
-    topic: '',
-    onMessage: {},
-    onError: {},
-  } as any);
+  await brokerKafka.consumer.addListener({
+    topic: 'test',
+    onMessage: () => ({}),
+    onError: () => ({}),
+  });
   expect(pool).toBeDefined();
   expect(spy).toHaveBeenCalled();
 });
@@ -42,14 +46,14 @@ it('Test Case Create Broker PubSub, consumer', async () => {
   };
   pubsubDependencyMocked.mockImplementationOnce(() => ({
     subscription: jest.fn(() => objectSusbscription),
-  } as any));
+  } as never));
   const spyPub = jest.spyOn(objectSusbscription, 'addListener');
   const brokerPubSub = createBroker({ type: 'pubsub' });
   await brokerPubSub.consumer.addListener({
-    topic: '',
+    topic: 'test',
     onMessage: () => undefined,
-    onError: {},
-  } as any);
+    onError: () => ({}),
+  });
   expect(pool).toBeDefined();
   expect(spyPub).toHaveBeenCalled();
 });
@@ -61,46 +65,48 @@ it('Test Case Create Broker ServiceBus, consumer', async () => {
   };
   servicebusDependencyMocked.mockImplementationOnce(() => ({
     createReceiver: jest.fn(() => objectSubscribe),
-  } as any));
+  } as never));
   const spySer = jest.spyOn(objectSubscribe, 'subscribe');
   const brokerServiceBus = createBroker({
     type: 'servicebus',
     serviceBusStrCnn: '',
   });
   await brokerServiceBus.consumer.addListener({
-    topic: '',
-    onMessage: {},
-    onError: {},
-  } as any);
+    topic: 'test',
+    onMessage: () => ({}),
+    onError: () => ({}),
+  });
   expect(pool).toBeDefined();
   expect(spySer).toHaveBeenCalled();
 });
 
-it('Test Case Broker Kafka consumer each message ', async () => {
+it('Test Case Broker Kafka consumer each message', async () => {
   const consumerKafkaMock = jest.fn();
+  let argsConsumer: ConsumerRunConfig = {} as unknown as ConsumerRunConfig;
   const consumerObj = {
     connect: jest.fn(() => Promise.resolve()),
     subscribe: jest.fn(() => Promise.resolve()),
-    run: jest.fn(),
+    run: jest.fn().mockImplementationOnce((args: ConsumerRunConfig) => {
+      argsConsumer = args;
+    }),
     on: jest.fn(() => Promise.resolve()),
     events: { CRASH: 'consumer.crash' },
   };
   consumerKafkaMock.mockReturnValueOnce(consumerObj);
-  let argsConsumer: ConsumerRunConfig = {} as unknown as ConsumerRunConfig;
-  consumerObj.run.mockImplementation((args: ConsumerRunConfig) => { 
-    argsConsumer = args
-  });
-
   kafkaDependecyMocked.mockImplementationOnce(() => ({
     consumer: consumerKafkaMock,
-  } as any));
-  const broker = createBroker({ type: 'kafka', kafkaOption: {} as any });
+    logger: jest.fn().mockReturnValueOnce({
+      debug: jest.fn(),
+    }),
+  } as never));
+  const brokerKafka = createBroker({ type: 'kafka', kafkaOption: { groupId: '123', brokers: ['broker'] } });
   const spy = jest.spyOn(consumerObj, 'connect');
-  await broker.consumer.addListener({
-    topic: '',
-    onMessage: {},
-    onError: {},
-  } as any);
+  await brokerKafka.consumer.addListener({
+    topic: 'test',
+    onMessage: () => ({}),
+    onError: () => ({}),
+  });
+  void argsConsumer.eachMessage?.(messageMock);
+
   expect(spy).toHaveBeenCalled();
-  argsConsumer.eachMessage!(messageMock)
 });

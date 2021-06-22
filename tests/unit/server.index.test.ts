@@ -5,12 +5,12 @@ jest.mock('koa');
 jest.mock('dotenv');
 
 describe('Test Case Server', () => {
-  it('Server Start init', async () => {
+  it('Server Start and Stop', () => {
     const config = createMockServer();
-    const app = await startServer(config);
-    expect(app).not.toEqual(undefined);
+    const app = startServer(config);
     const spy = jest.spyOn(app, 'removeAllListeners');
     stopServer();
+    expect(app).not.toEqual(undefined);
     expect(spy).toHaveBeenCalled();
   });
 });

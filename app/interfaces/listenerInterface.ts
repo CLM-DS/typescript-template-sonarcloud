@@ -1,4 +1,4 @@
-import { BrokerConfigurationInterface } from '.';
+import { BrokerConfigurationInterface } from './configurationInterface';
 import { wrapperDB } from '../utils';
 import { createLogger } from '../utils/logger';
 

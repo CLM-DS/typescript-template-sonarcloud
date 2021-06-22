@@ -9,7 +9,7 @@ jest.mock('@azure/service-bus');
 describe('Test Cases: Broker utils', () => {
   it('Test Case Create Broker Success', () => {
     const pool = createPool();
-    const brokerKafka = createBroker({ type: 'kafka', kafkaOption: { groupId: '123', brokers: ['broker'] }});
+    const brokerKafka = createBroker({ type: 'kafka', kafkaOption: { groupId: '123', brokers: ['broker'] } });
     const brokerPubSub = createBroker({ type: 'pubsub' });
     const brokerServiceBus = createBroker({ type: 'servicebus', serviceBusStrCnn: '' });
 
@@ -29,14 +29,14 @@ describe('Test Cases: Broker utils', () => {
     kafkaMock.Kafka.mockReturnValueOnce({
       producer: jest.fn().mockReturnValueOnce({
         connect: jest.fn(() => Promise.resolve()),
-        disconnect: jest.fn(() => Promise.resolve())
+        disconnect: jest.fn(() => Promise.resolve()),
       }),
     } as any);
     const pool = createPool();
-    const brokerKafka = createBroker({ type: 'kafka', kafkaOption: { groupId: '123', brokers: ['broker'] }});
+    const brokerKafka = createBroker({ type: 'kafka', kafkaOption: { groupId: '123', brokers: ['broker'] } });
     pool.addBroker('kafka', brokerKafka);
     expect(pool).toBeDefined();
-    expect(() => { pool.getBroker('kafka') }).not.toThrow();
+    expect(() => { pool.getBroker('kafka'); }).not.toThrow();
     expect(await brokerKafka.check()).toEqual(true);
   });
 
@@ -45,7 +45,7 @@ describe('Test Cases: Broker utils', () => {
     const brokerServiceBus = createBroker({ type: 'servicebus', serviceBusStrCnn: '' });
     pool.addBroker('servicebus', brokerServiceBus);
     expect(pool).toBeDefined();
-    expect(() => { pool.getBroker('servicebus') }).not.toThrow();
+    expect(() => { pool.getBroker('servicebus'); }).not.toThrow();
     expect(await brokerServiceBus.check()).toEqual(true);
   });
 
@@ -53,18 +53,18 @@ describe('Test Cases: Broker utils', () => {
     const pubSubMock = <jest.Mock<PubSub>><unknown>PubSub;
     pubSubMock.mockReturnValueOnce({
       auth: {
-        getAccessToken: jest.fn(() => Promise.resolve())
-      }
+        getAccessToken: jest.fn(() => Promise.resolve()),
+      },
     } as any);
     const pool = createPool();
     const brokerPubSub = createBroker({ type: 'pubsub' });
     pool.addBroker('pubsub', brokerPubSub);
     expect(pool).toBeDefined();
-    expect(() => { pool.getBroker('pubsub') }).not.toThrow();
+    expect(() => { pool.getBroker('pubsub'); }).not.toThrow();
     expect(await brokerPubSub.check()).toEqual(true);
   });
 
-  it('Test Case Create Broker check failure', async () => {
+  it('Test Case Create Broker check failure', () => {
     const pool = createPool();
     expect(pool).toBeDefined();
     expect(() => { pool.getBroker('kafka'); }).toThrow();

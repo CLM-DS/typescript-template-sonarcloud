@@ -1,7 +1,7 @@
-import { ConfigurationInterface } from '.';
-import { wrapperDB } from '../utils';
 import Koa from 'koa';
-import { createPool } from '../utils/broker';
+import { ConfigurationInterface } from './configurationInterface';
+import { wrapperDB } from '../utils';
+import { PoolInterface } from './poolInterface';
 
 export interface MiddlewareInterface {
   /**
@@ -15,7 +15,7 @@ export interface MiddlewareInterface {
   /**
    * Pool Instance
    */
-  pool?: ReturnType<typeof createPool>,
+  pool?: PoolInterface,
   /**
    * Database Instance
    */

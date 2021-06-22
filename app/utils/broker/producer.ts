@@ -1,6 +1,9 @@
 import { ServiceBusClient } from '@azure/service-bus';
 import { PubSub } from '@google-cloud/pubsub';
-import { ArgsBroker, BrokerClientType, BrokerProducerInterface, MessageBroker, MessageBrokerValue, TopicBroker } from '@models/brokerProducerInterface';
+import {
+  ArgsBroker, BrokerClientType, BrokerProducerInterface,
+  MessageBroker, MessageBrokerValue, TopicBroker,
+} from '@models/brokerProducerInterface';
 import { BrokerPublisherInterface } from '@models/brokerPublisherInterface';
 import { Kafka, Message, ProducerRecord } from 'kafkajs';
 import xss from 'xss';
@@ -11,7 +14,9 @@ import xss from 'xss';
  * @param {*} brokerOptions
  * @returns {Producer}
  */
-const createProducer = (brokerClient: BrokerClientType, brokerOptions: BrokerPublisherInterface): BrokerProducerInterface => {
+const createProducer = (
+  brokerClient: BrokerClientType, brokerOptions: BrokerPublisherInterface,
+): BrokerProducerInterface => {
   const defaultRecord = {
     topic: '',
     data: undefined,
@@ -46,6 +51,7 @@ const createProducer = (brokerClient: BrokerClientType, brokerOptions: BrokerPub
      * @type {import("@google-cloud/pubsub").Topic}
      */
     const topicInstance = (client as PubSub).topic(record.topic);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     let dataStr: string | undefined = record.data;
 
     if (typeof dataStr !== 'string') {
@@ -69,10 +75,11 @@ const createProducer = (brokerClient: BrokerClientType, brokerOptions: BrokerPub
      */
     const queueInstance = (client as ServiceBusClient).createSender(record.topic);
     return queueInstance.sendMessages({
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       body: JSON.parse(xss(JSON.stringify(record.data))),
     });
   };
-  
+
   const publishMessage = (
     topic: string,
     message: MessageBroker,

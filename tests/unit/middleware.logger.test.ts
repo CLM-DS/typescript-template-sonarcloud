@@ -1,5 +1,5 @@
-import { loggerMiddleware } from '../../app/server/middlewares/loggerMiddleware';
 import { createMockContext } from '@shopify/jest-koa-mocks';
+import { loggerMiddleware } from '../../app/server/middlewares/loggerMiddleware';
 
 describe('Test Cases: MonitorMiddleware', () => {
   it('Test Case log request', async () => {

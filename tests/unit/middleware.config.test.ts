@@ -1,5 +1,5 @@
-import { configMiddleware } from '../../app/server/middlewares/configMiddleware';
 import { createMockContext } from '@shopify/jest-koa-mocks';
+import { configMiddleware } from '../../app/server/middlewares/configMiddleware';
 import { createMockConfig } from '../mocks/mockConfig';
 
 describe('Test Cases: ConfigMiddleware', () => {

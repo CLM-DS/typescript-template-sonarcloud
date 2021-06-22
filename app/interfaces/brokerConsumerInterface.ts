@@ -1,4 +1,4 @@
-import { ListenerConfigurationInterface } from '.';
+import { ListenerConfigurationInterface } from './listenerConfigurationInterface';
 
 export interface BrokerConsumerInterface {
   /**

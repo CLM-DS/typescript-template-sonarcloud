@@ -11,5 +11,5 @@ export {
   createMockConfig,
   createMockListener,
   createMockServer,
-  createMockLogger
+  createMockLogger,
 };

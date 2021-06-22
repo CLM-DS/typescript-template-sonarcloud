@@ -1,7 +1,7 @@
-import { statusCodes } from '../../app/constants/httpStatus';
-import { errorMiddleware } from '../../app/server/middlewares/errorMiddleware';
 import { createMockContext } from '@shopify/jest-koa-mocks';
 import Koa from 'koa';
+import { statusCodes } from '../../app/constants/httpStatus';
+import { errorMiddleware } from '../../app/server/middlewares/errorMiddleware';
 import { createMockLogger } from '../mocks';
 
 describe('Test Cases: ErrorMiddleware', () => {
@@ -17,7 +17,7 @@ describe('Test Cases: ErrorMiddleware', () => {
     try {
       await errorMiddleware(app)(ctxMock, handlerError);
     } catch (error) {
-      //console.log(error);
+      // console.log(error);
     }
 
     expect(ctxMock.status).toEqual(statusCodes.INTERNAL_SERVER_ERROR);

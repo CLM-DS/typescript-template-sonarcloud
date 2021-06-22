@@ -8,5 +8,5 @@ export const createMockRequest = {
   },
   requestBody: {
     orderId: 123,
-  }
+  },
 };

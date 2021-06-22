@@ -1,5 +1,5 @@
-import { createConsumer } from '../utils/broker/consumer';
-import { createProducer } from '../utils/broker/producer';
+import { BrokerConsumerInterface } from './brokerConsumerInterface';
+import { BrokerProducerInterface } from './brokerProducerInterface';
 
 export interface BrokerInterface {
   /**
@@ -9,11 +9,11 @@ export interface BrokerInterface {
   /**
    * Producer
    */
-  producer: ReturnType<typeof createProducer>,
+  producer: BrokerProducerInterface,
   /**
    * Consumer
    */
-  consumer: ReturnType<typeof createConsumer>,
+  consumer: BrokerConsumerInterface,
   /**
    * Set Error Function
    */

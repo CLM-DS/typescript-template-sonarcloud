@@ -1,4 +1,4 @@
-import { BrokerInterface } from '.';
+import { BrokerInterface } from './brokerInterface';
 
 export interface PoolInterface {
   /**

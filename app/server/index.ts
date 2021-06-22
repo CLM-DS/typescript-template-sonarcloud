@@ -1,11 +1,12 @@
 import Koa from 'koa';
+import { Logger } from 'pino';
 import * as db from '../utils/wrapperDB';
 import { useRoutes } from '../routes';
 import { useMiddleware } from './middlewares';
 import { createLogger } from '../utils/logger';
 import { useListeners } from '../listeners';
 import { BrokerConfigurationInterface } from '../interfaces/configurationInterface';
-import { Logger } from 'pino';
+
 export interface AppInstance {
   options: BrokerConfigurationInterface;
   db?: db.WrapperDB;
@@ -50,10 +51,10 @@ const startServer = (options: BrokerConfigurationInterface): Koa => {
   });
   logger.info('Server Routes Loaded');
   app.listen(options.port, () => {
-    logger.info(`Server Listen Port: ${options.port}`);
+    logger.info(`Server Listen Port: ${options.port as number}`);
   });
   logger.info('Server Loaded');
-  
+
   return app;
 };
 

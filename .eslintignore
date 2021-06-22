@@ -11,5 +11,6 @@ tools/node-lint-md-cli-rollup/dist
 benchmark/tmp
 doc/**/*.js
 !.eslintrc.js
-jest.config.js
+jest.config.*
+tsconfig.json
 .vscode

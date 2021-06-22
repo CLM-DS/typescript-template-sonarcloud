@@ -12,7 +12,7 @@ const createLogger = (optionsIn?: LoggerOptions): ReturnType<typeof Pino> => {
     customLevels: { healthy: 0 },
     redact: [],
   };
-  
+
   return Pino(options);
 };
 

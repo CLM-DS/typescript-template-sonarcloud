@@ -12,7 +12,7 @@ export interface BrokerPublisherInterface {
   /**
    * Option type
    */
-  type: 'kafka'|'pubsub'|'servicebus',
+  type: 'kafka' | 'pubsub' | 'servicebus',
   /**
    *  Kafka Option
    */

@@ -8,4 +8,4 @@ createMockLogger.info = jest.fn();
 createMockLogger.warn = jest.fn();
 createMockLogger.error = jest.fn();
 
-export { createMockLogger }
+export { createMockLogger };

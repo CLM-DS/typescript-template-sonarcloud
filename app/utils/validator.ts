@@ -21,8 +21,8 @@ import { statusCodes } from '../constants/httpStatus';
  */
 const getProperty = (property: string, ctx: Context) => {
   const properties = property.split('.');
-  return properties.reduce<undefined | any>(
-    (acc, prop) => (acc ? acc[prop] : ctx[prop]),
+  return properties.reduce<undefined | Record<string, unknown>>(
+    (acc, prop) => (acc ? acc[prop] : ctx[prop]) as Record<string, unknown>,
     undefined,
   );
 };
@@ -38,9 +38,11 @@ const setProperty = (property: string, value: any, ctx: Context) => {
   let access = ctx;
   for (let i = 0; i <= properties.length - 2; i += 1) {
     const prop = properties[i];
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     access = access[prop];
   }
   const prop = properties[properties.length - 1];
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   access[prop] = value;
 };
 
@@ -62,32 +64,35 @@ export interface SchemeValidator {
   scheme: Schema;
 }
 export type SchemeError = ResultValidator | CustomError | ValidationError | undefined;
-export type EvaluateSchemes = (schemas: SchemeValidator[], ctx: Context, abort?: boolean) => SchemeError;
+export type EvaluateSchemes = (
+  schemas: SchemeValidator[], ctx: Context, abort?: boolean
+) => SchemeError;
 /**
  * @param {Boolean} [abort=true]
  */
-const evaluateSchemes: EvaluateSchemes = (schemas, ctx, abort = true) => {
-  return schemas.reduce<SchemeError>((acc, item) => {
-    if (acc && abort) {
-      return acc;
-    }
-    const { property, scheme } = item;
-    const data = getProperty(property, ctx);
-    if (!data) {
-      const e = {
-        property,
-        message: 'Data not found',
-      };
-      return abort ? e : { ...(acc || {}), [property]: e };
-    }
-    const { error, value } = scheme.validate(data);
-    if (error) {
-      return abort ? error : { ...(acc || {}), [property]: error };
-    }
-    setProperty(property, value, ctx);
+const evaluateSchemes: EvaluateSchemes = (
+  schemas, ctx, abort = true,
+) => schemas.reduce<SchemeError>((acc, item) => {
+  if (acc && abort) {
     return acc;
-  }, undefined);
-};
+  }
+  const { property, scheme } = item;
+  const data = getProperty(property, ctx);
+  if (!data) {
+    const e = {
+      property,
+      message: 'Data not found',
+    };
+    return abort ? e : { ...(acc || {}), [property]: e };
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const { error, value } = scheme.validate(data);
+  if (error) {
+    return abort ? error : { ...(acc || {}), [property]: error };
+  }
+  setProperty(property, value, ctx);
+  return acc;
+}, undefined);
 
 /**
  * @callback TransformCallback
@@ -112,16 +117,19 @@ const evaluateSchemes: EvaluateSchemes = (schemas, ctx, abort = true) => {
 export type ValidatorOptions = {
   abort?: boolean;
   transform?: (error: SchemeError, ctx?: Context) => any;
-}
-const useValidationObject = (schemas: SchemeValidator[], obj: any, options: ValidatorOptions = {}) => {
+};
+const useValidationObject = (
+  schemas: SchemeValidator[], obj: never, options: ValidatorOptions = {},
+) => {
   const { abort = true } = options;
-  let err = evaluateSchemes(schemas, obj, abort);
+  const err = evaluateSchemes(schemas, obj, abort);
   if (err) {
     if (options.transform) {
-      err = options.transform(err);
+      throw options.transform(err);
     }
-    throw err;
+    throw err as unknown;
   }
+
   return obj;
 };
 
@@ -133,7 +141,9 @@ const useValidationObject = (schemas: SchemeValidator[], obj: any, options: Vali
  * @returns {(ctx: Context) => Context}
  */
 export type CallbackKoa = (ctx: Context) => Context | Promise<Context>;
-const useValidation = (schemas: SchemeValidator[], handler: CallbackKoa, options: ValidatorOptions = {}) => (ctx: Context): Context | Promise<Context> => {
+const useValidation = (
+  schemas: SchemeValidator[], handler: CallbackKoa, options: ValidatorOptions = {},
+) => (ctx: Context): Context | Promise<Context> => {
   const { abort = true } = options;
   let err = evaluateSchemes(schemas, ctx, abort);
   if (!err) {
@@ -141,6 +151,7 @@ const useValidation = (schemas: SchemeValidator[], handler: CallbackKoa, options
   }
   const { transform } = options || {};
   if (transform) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     err = transform(err, ctx);
   }
   ctx.status = statusCodes.BAD_REQUEST;

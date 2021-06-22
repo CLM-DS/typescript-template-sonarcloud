@@ -1,5 +1,5 @@
 import { BrokerConfigurationInterface } from '@models/configurationInterface';
-import { Context } from 'koa'
+import { Context } from 'koa';
 import { httpStatus, serverStatus } from '../constants';
 
 /**
@@ -58,7 +58,7 @@ const checkCtx = (ctx: Context) => {
  */
 const healthy = (ctx: Context): Context => {
   const status = checkCtx(ctx);
-  
+
   if (!status) {
     ctx.status = httpStatus.statusCodes.SERVICE_UNAVAILABLE;
   } else {
@@ -118,4 +118,4 @@ const alive = (ctx: Context): Context => {
   return ctx;
 };
 
- export { alive, healthy };
+export { alive, healthy };

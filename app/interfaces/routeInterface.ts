@@ -1,5 +1,5 @@
 import Koa from 'koa';
-import { ConfigurationInterface } from '.';
+import { ConfigurationInterface } from './configurationInterface';
 import { createLogger } from '../utils/logger';
 
 export interface RouteInterface {

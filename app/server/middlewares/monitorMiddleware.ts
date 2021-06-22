@@ -44,11 +44,11 @@ const buildLog = (data: ContextInterface, type: LogType) => ({
  * @param {import('koa')} param0
  * @returns {LogData<ResponseLog>}
  */
-const buildResponseLog = ({ response, eventId }: Context) => buildLog({
+const buildResponseLog = ({ response }: Context) => buildLog({
   body: response.body,
   headers: response.headers,
   status: response.status,
-  eventId: eventId,
+  eventId: response.headers['x-txref'],
 }, 'response');
 
 /**
@@ -87,7 +87,7 @@ const monitorMiddleware = () => async (ctx: Context, next: Next): Promise<Contex
   if (!isPathHealty) {
     ctx.log.info(buildResponseLog(ctx));
   }
-  
+
   return ctx;
 };
 

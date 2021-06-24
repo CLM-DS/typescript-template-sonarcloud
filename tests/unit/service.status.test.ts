@@ -1,7 +1,9 @@
 import { createMockContext } from '@shopify/jest-koa-mocks';
 import { httpStatus } from '../../app/constants';
 import { statusService } from '../../app/services';
-import { createMockConfig, createMockLogger, createMockPool } from '../mocks';
+import {
+  createMockConfig, createMockDB, createMockLogger, createMockMongoConfig, createMockPool,
+} from '../mocks';
 import * as db from '../../app/utils/wrapperDB';
 
 jest.mock('../../app/utils/wrapperDB');
@@ -14,8 +16,42 @@ describe('Test Cases: Status Service', () => {
     expect(res.status).toEqual(httpStatus.statusCodes.OK);
   });
 
+  it('Test Status Healthy Success with DB', () => {
+    const ctxMock = createMockContext();
+    ctxMock.log = createMockLogger;
+    ctxMock.db = createMockDB;
+    ctxMock.config = createMockMongoConfig;
+    const res = statusService.healthy(ctxMock);
+    expect(res.status).toEqual(httpStatus.statusCodes.OK);
+  });
+
+  it('Test Status Healthy Success with Broker and Pool', () => {
+    const ctxMock = createMockContext();
+    ctxMock.log = createMockLogger;
+    ctxMock.config = { brokerConfig: { kafka: { type: 'kafka' } } };
+    ctxMock.pool = createMockPool(true);
+    const res = statusService.healthy(ctxMock);
+    expect(res.status).toEqual(httpStatus.statusCodes.OK);
+  });
+
   it('Test Status Healthy Failure', () => {
     const ctxMock = createMockContext();
+    const res = statusService.healthy(ctxMock);
+    expect(res.status).toEqual(httpStatus.statusCodes.SERVICE_UNAVAILABLE);
+  });
+
+  it('Test Status Healthy Failure with no DB', () => {
+    const ctxMock = createMockContext();
+    ctxMock.log = createMockLogger;
+    ctxMock.config = createMockMongoConfig;
+    const res = statusService.healthy(ctxMock);
+    expect(res.status).toEqual(httpStatus.statusCodes.SERVICE_UNAVAILABLE);
+  });
+
+  it('Test Status Healthy Failure with empty Broker', () => {
+    const ctxMock = createMockContext();
+    ctxMock.log = createMockLogger;
+    ctxMock.config = { brokerConfig: { kafka: { type: 'kafka' } } };
     const res = statusService.healthy(ctxMock);
     expect(res.status).toEqual(httpStatus.statusCodes.SERVICE_UNAVAILABLE);
   });

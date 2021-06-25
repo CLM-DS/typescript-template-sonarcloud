@@ -125,4 +125,7 @@ sonar-project.properties
 # Typescript compiled output
 dist/
 
+#Husky hooks
+.husky/
+
 package-lock.json

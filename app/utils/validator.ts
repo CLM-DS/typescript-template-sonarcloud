@@ -33,7 +33,7 @@ const getProperty = (property: string, ctx: Context) => {
  * @param {string} value
  * @param {Context} ctx
  */
-const setProperty = (property: string, value: any, ctx: Context) => {
+const setProperty = (property: string, value: unknown, ctx: Context) => {
   const properties = property.split('.');
   let access = ctx;
   for (let i = 0; i <= properties.length - 2; i += 1) {
@@ -42,21 +42,14 @@ const setProperty = (property: string, value: any, ctx: Context) => {
     access = access[prop];
   }
   const prop = properties[properties.length - 1];
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   access[prop] = value;
 };
 
-/**
- * Evaluate Schemas
- * @param {SchemeValidation[]} schemas
- * @param {Context} ctx
- * @param {boolean} abort
- */
-export interface CustomError {
+interface CustomError {
   property: string;
   message: string;
 }
-export interface ResultValidator {
+interface ResultValidator {
   [key: string]: ValidationError | CustomError;
 }
 export interface SchemeValidator {
@@ -64,20 +57,23 @@ export interface SchemeValidator {
   scheme: Schema;
 }
 export type SchemeError = ResultValidator | CustomError | ValidationError | undefined;
-export type EvaluateSchemes = (
-  schemas: SchemeValidator[], ctx: Context, abort?: boolean
-) => SchemeError;
+
 /**
- * @param {Boolean} [abort=true]
+ * Evaluate Schemas
+ * @param {SchemeValidation[]} schemas
+ * @param {Context} ctx
+ * @param {boolean} abort
  */
-const evaluateSchemes: EvaluateSchemes = (
-  schemas, ctx, abort = true,
-) => schemas.reduce<SchemeError>((acc, item) => {
+const evaluateSchemes = (
+  schemas: SchemeValidator[], ctx: Context, abort = true,
+): SchemeError => schemas.reduce<SchemeError>((acc, item) => {
   if (acc && abort) {
     return acc;
   }
+
   const { property, scheme } = item;
   const data = getProperty(property, ctx);
+
   if (!data) {
     const e = {
       property,
@@ -85,12 +81,14 @@ const evaluateSchemes: EvaluateSchemes = (
     };
     return abort ? e : { ...(acc || {}), [property]: e };
   }
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const { error, value } = scheme.validate(data);
-  if (error) {
-    return abort ? error : { ...(acc || {}), [property]: error };
+
+  const validation = scheme.validate(data);
+
+  if (validation.error) {
+    return abort ? validation.error : { ...(acc || {}), [property]: validation.error };
   }
-  setProperty(property, value, ctx);
+
+  setProperty(property, validation.value, ctx);
   return acc;
 }, undefined);
 
@@ -102,42 +100,43 @@ const evaluateSchemes: EvaluateSchemes = (
  */
 
 /**
- * @typedef {Object} ValidationOption
- * @property {TransformCallback} transform option to transform error
+ * @typedef {Object} ValidatorOptions
  * @property {boolean} abort stop in first error check
+ * @property {TransformCallback} transform option to transform error
  */
+type ValidatorOptions = {
+  abort?: boolean;
+  transform?: (error: SchemeError, ctx?: Context) => any;
+};
 
 /**
  *
  * @param {[SchemeValidation]} schemas
  * @param {*} obj
- * @param {ValidationOption} options
- * @returns {(ctx: Context) => Context}
+ * @param {ValidatorOptions} options
  */
-export type ValidatorOptions = {
-  abort?: boolean;
-  transform?: (error: SchemeError, ctx?: Context) => any;
-};
 const useValidationObject = (
   schemas: SchemeValidator[], obj: never, options: ValidatorOptions = {},
 ) => {
   const { abort = true } = options;
   const err = evaluateSchemes(schemas, obj, abort);
-  if (err) {
-    if (options.transform) {
-      throw options.transform(err);
-    }
-    throw err as unknown;
+
+  if (!err) {
+    return obj;
   }
 
-  return obj;
+  if (options.transform) {
+    throw options.transform(err);
+  }
+
+  throw err as unknown;
 };
 
 /**
  *
  * @param {[SchemeValidation]} schemas
  * @param {*} handler
- * @param {ValidationOption} options
+ * @param {ValidatorOptions} options
  * @returns {(ctx: Context) => Context}
  */
 export type CallbackKoa = (ctx: Context) => Context | Promise<Context>;
@@ -145,18 +144,20 @@ const useValidation = (
   schemas: SchemeValidator[], handler: CallbackKoa, options: ValidatorOptions = {},
 ) => (ctx: Context): Context | Promise<Context> => {
   const { abort = true } = options;
-  let err = evaluateSchemes(schemas, ctx, abort);
+  const err = evaluateSchemes(schemas, ctx, abort);
+
   if (!err) {
     return handler(ctx);
   }
-  const { transform } = options || {};
-  if (transform) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    err = transform(err, ctx);
+
+  if (options.transform) {
+    ctx.log.error(options.transform(err, ctx), 'Validation Error');
   }
+
   ctx.status = statusCodes.BAD_REQUEST;
   ctx.body = JSON.parse(xss(JSON.stringify(err)));
-  ctx.log.warn(err as any, 'Validation fail');
+  ctx.log.error(err, 'Validation Error');
+
   return ctx;
 };
 

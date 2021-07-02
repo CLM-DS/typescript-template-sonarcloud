@@ -9,7 +9,7 @@ import { BrokerConfigurationInterface } from '../interfaces/configurationInterfa
 
 export interface AppInstance {
   options: BrokerConfigurationInterface;
-  db?: db.WrapperDB;
+  db?: db.WrapperDBInterface;
   log: Logger;
 }
 /**

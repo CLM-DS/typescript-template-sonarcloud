@@ -144,7 +144,7 @@ export {
   dataSource,
 };
 
-export interface WrapperDB {
+export interface WrapperDBInterface {
   create: Create,
   createBatch: CreateBatch,
   update: Update,

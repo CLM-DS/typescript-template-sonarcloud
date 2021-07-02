@@ -1,6 +1,6 @@
 import Koa from 'koa';
+import { Logger } from 'pino';
 import { ConfigurationInterface } from './configurationInterface';
-import { createLogger } from '../utils/logger';
 
 export interface RouteInterface {
   /**
@@ -14,5 +14,5 @@ export interface RouteInterface {
   /**
    * Mongo DataBase URI
    */
-  log: ReturnType<typeof createLogger>,
+  log: Logger,
 }

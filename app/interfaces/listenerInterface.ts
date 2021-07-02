@@ -1,6 +1,6 @@
+import { WrapperDBInterface } from 'app/utils/wrapperDB';
+import { Logger } from 'pino';
 import { BrokerConfigurationInterface } from './configurationInterface';
-import { wrapperDB } from '../utils';
-import { createLogger } from '../utils/logger';
 
 export interface ListenerInterface {
   /**
@@ -10,9 +10,9 @@ export interface ListenerInterface {
   /**
    * Listening Port Number
    */
-  db?: typeof wrapperDB,
+  db?: WrapperDBInterface,
   /**
    * Mongo DataBase URI
    */
-  log: ReturnType<typeof createLogger>,
+  log: Logger,
 }

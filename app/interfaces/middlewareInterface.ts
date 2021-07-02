@@ -1,6 +1,6 @@
 import Koa from 'koa';
+import { WrapperDBInterface } from 'app/utils/wrapperDB';
 import { ConfigurationInterface } from './configurationInterface';
-import { wrapperDB } from '../utils';
 import { PoolInterface } from './poolInterface';
 
 export interface MiddlewareInterface {
@@ -19,5 +19,5 @@ export interface MiddlewareInterface {
   /**
    * Database Instance
    */
-  db: typeof wrapperDB,
+  db: WrapperDBInterface,
 }

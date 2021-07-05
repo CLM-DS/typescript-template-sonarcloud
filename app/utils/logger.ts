@@ -1,7 +1,7 @@
 import Pino, { Logger, LoggerOptions } from 'pino';
 
 const createLogger = (optionsIn?: LoggerOptions): Logger => {
-  const env = process.env.APP_ENV || 'qa';
+  const env = process.env.APP_ENV || 'q';
   const name = process.env.APP_NAME;
   const enable = !!process.env.LOG_ENABLED;
   const options = optionsIn || {

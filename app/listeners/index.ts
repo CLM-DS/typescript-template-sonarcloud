@@ -1,6 +1,6 @@
 import { createBroker, createPool } from '../utils/broker';
 import { BrokerConfigurationInterface } from '../interfaces/configurationInterface';
-import { ListenerInterface } from '../interfaces';
+import { ListenerInterface, PoolInterface } from '../interfaces';
 
 const createBrokers = (options: BrokerConfigurationInterface) => {
   const pool = createPool();
@@ -18,7 +18,7 @@ const createBrokers = (options: BrokerConfigurationInterface) => {
  * @param {*} args
  * @returns {*}
  */
-const useListeners = (args: ListenerInterface): ReturnType<typeof createPool> | undefined => {
+const useListeners = (args: ListenerInterface): PoolInterface | undefined => {
   const { options } = args;
 
   if (

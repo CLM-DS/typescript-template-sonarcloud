@@ -1,3 +1,4 @@
+import Router from 'koa-router';
 import { RouteInterface } from '../interfaces';
 import { createRouterStatus } from './statusRoute';
 
@@ -7,7 +8,7 @@ import { createRouterStatus } from './statusRoute';
  * @param {*} router koa router instance
  * @param {*} options app options globals
  */
-const useRoute = (app: RouteInterface['app'], router: ReturnType<typeof createRouterStatus>, options: RouteInterface['options']) => {
+const useRoute = (app: RouteInterface['app'], router: Router, options: RouteInterface['options']) => {
   const { prefix } = options;
   router.prefix(prefix || '');
   app.use(router.routes());

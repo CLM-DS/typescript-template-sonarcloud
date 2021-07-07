@@ -8,7 +8,7 @@
     "dev": "nodemon -e ts --watch app --exec 'ts-node' -r tsconfig-paths/register app | pino-pretty -c -l -t",
     "lint": "eslint . --ext .ts",
     "build": "ttsc -p .",
-    "start": "node dist",
+    "start": "node dist/app",
     "prepare": "husky install && npx husky add .husky/pre-commit 'npx lint-staged'"
   },
   "lint-staged": {

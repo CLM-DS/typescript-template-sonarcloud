@@ -6,5 +6,5 @@ export interface ContextInterface {
   status?: number,
   url?: string,
   method?: string,
-  eventId?: OutgoingHttpHeader | undefined,
+  eventId?: OutgoingHttpHeader,
 }

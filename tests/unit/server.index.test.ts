@@ -1,8 +1,8 @@
-import { startServer, stopServer } from '../../app/server';
-import { createMockServer } from '../mocks/mockServer';
-
 jest.mock('koa');
 jest.mock('dotenv');
+
+import { startServer, stopServer } from '../../app/server';
+import { createMockServer } from '../mocks/mockServer';
 
 describe('Test Case Server', () => {
   it('Server Start and Stop', () => {

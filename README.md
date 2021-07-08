@@ -77,6 +77,16 @@ const useMiddleware = (args = {}) => {
 
 Las pruebas unitarias deben realizarse dentro de la carpeta test/unit, cualquier mock que usen estas que sea comun para otras pruebas unitarias como el context deben ubicarse en el directorio test/mock
 
+_Nota importante para hacer el mock de algun modulo:_
+Al momento de realizar el mock de alguna dependencia, la declaracion del mock debe realizarse *antes* de la importacion del modulo en si; es un paso critico para que no se pierda la referencia al momento de la transpilacion a `JS`. Ejemplo:
+
+```js
+jest.mock('../../app/utils/broker');
+import { createBroker } from '../../app/utils/broker';
+
+const createBrokerMock = createBroker as jest.MockedFunction<typeof createBroker>;
+```
+
 ### Configuration
 
 All the configuration variables regardless of the origin must be loaded in the config, located in the config directory in the index.js file, since these will be loaded at startup and will allow their use in the rest of the application.

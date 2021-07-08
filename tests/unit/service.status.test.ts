@@ -1,3 +1,5 @@
+jest.mock('../../app/utils/wrapperDB');
+
 import { createMockContext } from '@shopify/jest-koa-mocks';
 import { httpStatus } from '../../app/constants';
 import { statusService } from '../../app/services';
@@ -5,8 +7,6 @@ import {
   createMockConfig, createMockDB, createMockLogger, createMockMongoConfig, createMockPool,
 } from '../mocks';
 import * as db from '../../app/utils/wrapperDB';
-
-jest.mock('../../app/utils/wrapperDB');
 
 describe('Test Cases: Status Service', () => {
   it('Test Status Healthy Success', () => {

@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+jest.mock('mongodb');
+
 import { MongoClient } from 'mongodb';
 import mongoMocks from '../mocks/mockMongo';
 import { createMockMongoConfig } from '../mocks/mockMongoConfig';
 import * as wrapper from '../../app/utils/wrapperDB';
-
-jest.mock('mongodb');
 
 describe('Test Cases: wrapperDB', () => {
   let client: MongoClient | undefined;

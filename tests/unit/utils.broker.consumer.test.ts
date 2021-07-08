@@ -1,3 +1,7 @@
+jest.mock('@google-cloud/pubsub');
+jest.mock('@azure/service-bus');
+jest.mock('kafkajs');
+
 import kafkajs, { ConsumerRunConfig } from 'kafkajs';
 import { PubSub } from '@google-cloud/pubsub';
 import { ServiceBusClient } from '@azure/service-bus';
@@ -7,9 +11,6 @@ import { messageMock } from '../mocks/mockMessage';
 const kafkaDependecyMocked = <jest.Mock<kafkajs.Kafka>>kafkajs.Kafka;
 const pubsubDependencyMocked = <jest.Mock<PubSub>><unknown>PubSub;
 const servicebusDependencyMocked = <jest.Mock<ServiceBusClient>>ServiceBusClient;
-jest.mock('@google-cloud/pubsub');
-jest.mock('@azure/service-bus');
-jest.mock('kafkajs');
 
 it('Test Case Create Broker Kafka, consumer', async () => {
   const pool = createPool();

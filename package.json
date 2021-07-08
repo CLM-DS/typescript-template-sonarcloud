@@ -4,7 +4,8 @@
   "description": "Template to build rest api",
   "main": "app/index.ts",
   "scripts": {
-    "test": "jest --coverage",
+    "test": "jest",
+    "coverage": "jest --coverage",
     "dev": "nodemon -e ts --watch app --exec 'ts-node' -r tsconfig-paths/register app | pino-pretty -c -l -t",
     "lint": "eslint . --ext .ts",
     "build": "ttsc -p .",

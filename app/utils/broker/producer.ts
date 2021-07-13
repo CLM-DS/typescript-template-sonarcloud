@@ -34,7 +34,7 @@ const createProducer = (
      */
     const producerKafka = (client as Kafka).producer();
     await producerKafka.connect();
-    const res = producerKafka.send(record);
+    const res = await producerKafka.send(record);
     await producerKafka.disconnect();
     return res;
   };

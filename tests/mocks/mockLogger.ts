@@ -1,6 +1,6 @@
-import Pino from 'pino';
-
 jest.mock('pino');
+
+import Pino from 'pino';
 
 const createMockLogger = Pino as jest.Mocked<typeof Pino> as unknown as Pino.Logger;
 

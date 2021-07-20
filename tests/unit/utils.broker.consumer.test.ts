@@ -86,6 +86,7 @@ it('Test Case Broker Kafka consumer each message', async () => {
   let argsConsumer: ConsumerRunConfig = {} as unknown as ConsumerRunConfig;
   const consumerObj = {
     connect: jest.fn(() => Promise.resolve()),
+    disconnect: jest.fn(() => Promise.resolve()),
     subscribe: jest.fn(() => Promise.resolve()),
     run: jest.fn().mockImplementationOnce((args: ConsumerRunConfig) => {
       argsConsumer = args;
@@ -109,5 +110,34 @@ it('Test Case Broker Kafka consumer each message', async () => {
   });
   void argsConsumer.eachMessage?.(messageMock);
 
+  expect(spy).toHaveBeenCalled();
+});
+
+it('Test Case Broker Kafka consumer error', async () => {
+  jest.spyOn(process, 'exit').mockImplementation(() => undefined as never);
+  const consumerKafkaMock = jest.fn();
+  const consumerObj = {
+    connect: jest.fn(() => Promise.resolve()),
+    disconnect: jest.fn(),
+    subscribe: jest.fn(() => Promise.resolve()),
+    run: jest.fn(() => Promise.reject()),
+    on: jest.fn(() => Promise.resolve()),
+    events: { CRASH: 'consumer.crash' },
+  };
+  consumerKafkaMock.mockReturnValueOnce(consumerObj);
+  kafkaDependecyMocked.mockImplementationOnce(() => ({
+    consumer: consumerKafkaMock,
+    logger: jest.fn().mockReturnValueOnce({
+      debug: jest.fn(),
+      error: jest.fn(),
+    }),
+  } as never));
+  const brokerKafka = createBroker({ type: 'kafka', kafkaOption: { groupId: '123', brokers: ['broker'] } });
+  const spy = jest.spyOn(consumerObj, 'connect');
+  await brokerKafka.consumer.addListener({
+    topic: 'test',
+    onMessage: () => ({}),
+    onError: () => ({}),
+  });
   expect(spy).toHaveBeenCalled();
 });

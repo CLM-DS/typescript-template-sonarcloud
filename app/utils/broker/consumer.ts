@@ -40,27 +40,25 @@ const createConsumer = (
    * @param {Kafka} client
    * @param {BrokerOptionSubscriber} options
    */
-  const createReceiverKafka = async (
-    client: BrokerClientType, options: ListenerConfigurationInterface,
-  ) => {
+  const createReceiverKafka = async (client: Kafka, options: ListenerConfigurationInterface) => {
     /**
      * @type {import('kafkajs').Consumer}
      */
-    const consumer = brokerReceiver || (client as Kafka).consumer({
+    const consumer = brokerReceiver || client.consumer({
       groupId: (brokerOptions.kafkaOption as KafkaConfigConsumer).groupId as string,
     });
 
-    if (!brokerReceiver) {
-      await consumer.connect();
-    }
+    const consume = async () => {
+      if (!brokerReceiver) {
+        await consumer.connect();
+      }
 
-    await consumer.subscribe({
-      topic: options.topic,
-    });
+      await consumer.subscribe({
+        topic: options.topic,
+      });
 
-    messageProcessor[options.topic] = options;
+      messageProcessor[options.topic] = options;
 
-    if (!brokerReceiver) {
       await consumer.run({
         eachMessage: async ({ topic, partition, message }) => {
           let headers = {};
@@ -86,7 +84,7 @@ const createConsumer = (
             value: (message.value || '').toString(),
           };
 
-          (client as Kafka).logger().debug('Message received', args);
+          client.logger().debug('Message received', args);
 
           try {
             messageProcessor[topic].onMessage(message);
@@ -95,7 +93,22 @@ const createConsumer = (
           }
         },
       });
-    }
+    };
+
+    // Check for errors during execution and restart or exit
+    consume().catch(async (error) => {
+      client.logger().error('Kafka consumer error', error);
+
+      try {
+        await consumer.disconnect();
+        process.exit(0);
+      } catch (er) {
+        client.logger().error('Failed to gracefully disconnect Kafka consumer', er);
+        process.exit(1);
+      }
+    });
+
+    // Assign consumer
     brokerReceiver = consumer;
   };
 
@@ -104,10 +117,8 @@ const createConsumer = (
    * @param {PubSub} client
    * @param {ListenerOption} options
    */
-  const createReceiverPubSub = (
-    client: BrokerClientType, options: ListenerConfigurationInterface,
-  ) => {
-    const subscription = (client as PubSub).subscription(options.topic);
+  const createReceiverPubSub = (client: PubSub, options: ListenerConfigurationInterface) => {
+    const subscription = client.subscription(options.topic);
     subscription.addListener('message', options.onMessage);
     subscription.addListener('error', options.onError);
   };
@@ -118,9 +129,9 @@ const createConsumer = (
    * @param {ListenerOption} options
    */
   const createReceiverServiceBus = (
-    client: BrokerClientType, options: ListenerConfigurationInterface,
+    client: ServiceBusClient, options: ListenerConfigurationInterface,
   ) => {
-    const receiver = (client as ServiceBusClient).createReceiver(options.topic);
+    const receiver = client.createReceiver(options.topic);
     receiver.subscribe({
       processMessage: options.onMessage as never,
       processError: options.onError as never,
@@ -134,13 +145,13 @@ const createConsumer = (
   const addListener = async (options: ListenerConfigurationInterface) => {
     switch (brokerOptions.type) {
       case 'kafka':
-        await createReceiverKafka(brokerClient, options);
+        await createReceiverKafka(brokerClient as Kafka, options);
         break;
       case 'pubsub':
-        createReceiverPubSub(brokerClient, options);
+        createReceiverPubSub(brokerClient as PubSub, options);
         break;
       case 'servicebus':
-        createReceiverServiceBus(brokerClient, options);
+        createReceiverServiceBus(brokerClient as ServiceBusClient, options);
         break;
       default:
         if (brokerClient) {

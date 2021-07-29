@@ -75,10 +75,11 @@ const useMiddleware = (args = {}) => {
 
 ### test
 
-All the unit tests must be placed within the test/unit folder, any mock intended to be reused among the different tests such as 'context' must be placed within the test/mock 
+All the unit tests must be placed within the `test/unit` folder, any mock intended to be reused among the different tests such as 'context' must be placed within the `test/mock` 
 folder.
 
 _Important note when mocking a module:_
+
 At the time the mock is being declared to override a dependency, the mock declaration must occur *before* the actual import of the module itself; this is a critical step not to incur on any errors when the test is transpiled to `JS`. Example:
 
 ```js

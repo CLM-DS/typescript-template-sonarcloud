@@ -75,10 +75,11 @@ const useMiddleware = (args = {}) => {
 
 ### test
 
-Las pruebas unitarias deben realizarse dentro de la carpeta test/unit, cualquier mock que usen estas que sea comun para otras pruebas unitarias como el context deben ubicarse en el directorio test/mock
+All the unit tests must be placed within the test/unit folder, any mock intended to be reused among the different tests such as 'context' must be placed within the test/mock 
+folder.
 
-_Nota importante para hacer el mock de algun modulo:_
-Al momento de realizar el mock de alguna dependencia, la declaracion del mock debe realizarse *antes* de la importacion del modulo en si; es un paso critico para que no se pierda la referencia al momento de la transpilacion a `JS`. Ejemplo:
+_Important note when mocking a module:_
+At the time the mock is being declared to override a dependency, the mock declaration must occur *before* the actual import of the module itself; this is a critical step not to incur on any errors when the test is transpiled to `JS`. Example:
 
 ```js
 jest.mock('../../app/utils/broker');

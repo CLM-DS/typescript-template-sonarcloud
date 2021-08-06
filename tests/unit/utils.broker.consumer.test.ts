@@ -29,7 +29,7 @@ it('Test Case Create Broker Kafka, consumer', async () => {
       debug: jest.fn(),
     }),
   } as never));
-  const brokerKafka = createBroker({ type: 'kafka', kafkaOption: { groupId: '123', brokers: ['broker'] } });
+  const brokerKafka = createBroker({ type: 'kafka', kafkaOption: { topic: 'test', groupId: '123', brokers: ['broker'] } });
   const spy = jest.spyOn(consumerObj, 'connect');
   await brokerKafka.consumer.addListener({
     topic: 'test',
@@ -101,7 +101,7 @@ it('Test Case Broker Kafka consumer each message', async () => {
       debug: jest.fn(),
     }),
   } as never));
-  const brokerKafka = createBroker({ type: 'kafka', kafkaOption: { groupId: '123', brokers: ['broker'] } });
+  const brokerKafka = createBroker({ type: 'kafka', kafkaOption: { topic: 'test', groupId: '123', brokers: ['broker'] } });
   const spy = jest.spyOn(consumerObj, 'connect');
   await brokerKafka.consumer.addListener({
     topic: 'test',
@@ -132,7 +132,7 @@ it('Test Case Broker Kafka consumer error', async () => {
       error: jest.fn(),
     }),
   } as never));
-  const brokerKafka = createBroker({ type: 'kafka', kafkaOption: { groupId: '123', brokers: ['broker'] } });
+  const brokerKafka = createBroker({ type: 'kafka', kafkaOption: { topic: 'test', groupId: '123', brokers: ['broker'] } });
   const spy = jest.spyOn(consumerObj, 'connect');
   await brokerKafka.consumer.addListener({
     topic: 'test',

@@ -141,7 +141,8 @@ Example
             type: 'kafka',
             kafkaOption: {
                 brokers: [],
-                clientId: ""
+                topic: ""
+                groupId: ""
             }
         },
         "servicebus-1": {

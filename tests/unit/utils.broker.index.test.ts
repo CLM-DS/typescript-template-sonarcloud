@@ -9,7 +9,7 @@ import { createPool, createBroker } from '../../app/utils/broker';
 describe('Test Cases: Broker utils', () => {
   it('Test Case Create Broker Success', () => {
     const pool = createPool();
-    const brokerKafka = createBroker({ type: 'kafka', kafkaOption: { groupId: '123', brokers: ['broker'] } });
+    const brokerKafka = createBroker({ type: 'kafka', kafkaOption: { topic: 'test', groupId: '123', brokers: ['broker'] } });
     const brokerPubSub = createBroker({ type: 'pubsub' });
     const brokerServiceBus = createBroker({ type: 'servicebus', serviceBusStrCnn: '' });
 
@@ -33,7 +33,7 @@ describe('Test Cases: Broker utils', () => {
       }),
     } as any);
     const pool = createPool();
-    const brokerKafka = createBroker({ type: 'kafka', kafkaOption: { groupId: '123', brokers: ['broker'] } });
+    const brokerKafka = createBroker({ type: 'kafka', kafkaOption: { topic: 'test', groupId: '123', brokers: ['broker'] } });
     pool.addBroker('kafka', brokerKafka);
     expect(pool).toBeDefined();
     expect(() => { pool.getBroker('kafka'); }).not.toThrow();

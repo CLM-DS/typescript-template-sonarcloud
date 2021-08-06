@@ -1,6 +1,7 @@
 import { KafkaConfig } from 'kafkajs';
 
 interface KafkaOption extends KafkaConfig {
+  topic: string,
   groupId: string
 }
 

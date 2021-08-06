@@ -6,7 +6,7 @@ export const createMockListener = {
     brokerConfig: {
       kafkaConsumer: {
         type: 'kafka' as const,
-        kafkaOption: { groupId: 'test', brokers: ['broker'] },
+        kafkaOption: { topic: 'test', groupId: 'test', brokers: ['broker'] },
       },
     },
   },

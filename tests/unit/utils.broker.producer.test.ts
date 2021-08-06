@@ -23,7 +23,7 @@ describe('Test Cases: Broker utils', () => {
     kafkaDependecyMocked.mockImplementationOnce(() => ({
       producer: producerKafkaMock,
     } as never));
-    const brokerKafka = createBroker({ type: 'kafka', kafkaOption: { groupId: '123', brokers: ['broker'] } });
+    const brokerKafka = createBroker({ type: 'kafka', kafkaOption: { topic: 'test', groupId: '123', brokers: ['broker'] } });
     brokerKafka.setError('err');
     pool.setError('err');
     pool.addBroker('kafka', brokerKafka);

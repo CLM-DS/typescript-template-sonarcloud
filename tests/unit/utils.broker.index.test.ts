@@ -9,9 +9,10 @@ import { createPool, createBroker } from '../../app/utils/broker';
 describe('Test Cases: Broker utils', () => {
   it('Test Case Create Broker Success', () => {
     const pool = createPool();
-    const brokerKafka = createBroker({ type: 'kafka', kafkaOption: { topic: 'test', groupId: '123', brokers: ['broker'] } });
-    const brokerPubSub = createBroker({ type: 'pubsub' });
-    const brokerServiceBus = createBroker({ type: 'servicebus', serviceBusStrCnn: '' });
+    const brokerKafkaConfig = { type: 'kafka' as const, kafkaOption: { topic: 'test', groupId: '123', brokers: ['broker'] }, onCrash: () => {} };
+    const brokerKafka = createBroker(brokerKafkaConfig);
+    const brokerPubSub = createBroker({ type: 'pubsub', onCrash: () => {} });
+    const brokerServiceBus = createBroker({ type: 'servicebus', serviceBusStrCnn: '', onCrash: () => {} });
 
     expect(pool).toBeDefined();
     expect(brokerKafka.haveError()).toEqual(false);
@@ -20,7 +21,7 @@ describe('Test Cases: Broker utils', () => {
   });
 
   it('Test Case Create Broker Failure', () => {
-    const brokerFail = createBroker({ type: 'kafka' });
+    const brokerFail = createBroker({ type: 'kafka', onCrash: () => {} });
     expect(brokerFail.haveError()).toBeDefined();
   });
 
@@ -33,7 +34,7 @@ describe('Test Cases: Broker utils', () => {
       }),
     } as any);
     const pool = createPool();
-    const brokerKafka = createBroker({ type: 'kafka', kafkaOption: { topic: 'test', groupId: '123', brokers: ['broker'] } });
+    const brokerKafka = createBroker({ type: 'kafka', kafkaOption: { topic: 'test', groupId: '123', brokers: ['broker'] }, onCrash: () => {} });
     pool.addBroker('kafka', brokerKafka);
     expect(pool).toBeDefined();
     expect(() => { pool.getBroker('kafka'); }).not.toThrow();
@@ -42,7 +43,7 @@ describe('Test Cases: Broker utils', () => {
 
   it('Test Case Create Broker ServiceBus check success', async () => {
     const pool = createPool();
-    const brokerServiceBus = createBroker({ type: 'servicebus', serviceBusStrCnn: '' });
+    const brokerServiceBus = createBroker({ type: 'servicebus', serviceBusStrCnn: '', onCrash: () => {} });
     pool.addBroker('servicebus', brokerServiceBus);
     expect(pool).toBeDefined();
     expect(() => { pool.getBroker('servicebus'); }).not.toThrow();
@@ -57,7 +58,7 @@ describe('Test Cases: Broker utils', () => {
       },
     } as any);
     const pool = createPool();
-    const brokerPubSub = createBroker({ type: 'pubsub' });
+    const brokerPubSub = createBroker({ type: 'pubsub', onCrash: () => {} });
     pool.addBroker('pubsub', brokerPubSub);
     expect(pool).toBeDefined();
     expect(() => { pool.getBroker('pubsub'); }).not.toThrow();

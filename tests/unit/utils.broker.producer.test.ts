@@ -23,7 +23,7 @@ describe('Test Cases: Broker utils', () => {
     kafkaDependecyMocked.mockImplementationOnce(() => ({
       producer: producerKafkaMock,
     } as never));
-    const brokerKafka = createBroker({ type: 'kafka', kafkaOption: { topic: 'test', groupId: '123', brokers: ['broker'] } });
+    const brokerKafka = createBroker({ type: 'kafka', kafkaOption: { topic: 'test', groupId: '123', brokers: ['broker'] }, onCrash: () => {} });
     brokerKafka.setError('err');
     pool.setError('err');
     pool.addBroker('kafka', brokerKafka);
@@ -39,7 +39,7 @@ describe('Test Cases: Broker utils', () => {
         publish: jest.fn(() => 'id'),
       })),
     } as never));
-    const brokerPubSub = createBroker({ type: 'pubsub' });
+    const brokerPubSub = createBroker({ type: 'pubsub', onCrash: () => {} });
     brokerPubSub.setError('err');
     pool.setError('err');
     pool.addBroker('kafka', brokerPubSub);
@@ -55,10 +55,7 @@ describe('Test Cases: Broker utils', () => {
         sendMessages: jest.fn(() => 'id'),
       })),
     } as never));
-    const brokerServiceBus = createBroker({
-      type: 'servicebus',
-      serviceBusStrCnn: '',
-    });
+    const brokerServiceBus = createBroker({ type: 'servicebus', serviceBusStrCnn: '', onCrash: () => {} });
     brokerServiceBus.setError('err');
     pool.setError('err');
     pool.addBroker('kafka', brokerServiceBus);
@@ -66,5 +63,31 @@ describe('Test Cases: Broker utils', () => {
     const idQueue = await brokerServiceBus.producer.publish('', { data: {} }, {});
     expect(pool).toBeDefined();
     expect(idQueue).toEqual('id');
+  });
+
+  it('Test Broker Kafka producer error', async () => {
+    jest.spyOn(process, 'exit').mockImplementation(() => undefined as never);
+    const pool = createPool();
+    const producerKafkaMock = jest.fn();
+    const producerObject = {
+      connect: jest.fn(() => Promise.resolve()),
+      send: jest.fn(() => Promise.reject()),
+      disconnect: jest.fn(() => Promise.resolve()),
+    };
+    producerKafkaMock.mockReturnValueOnce(producerObject);
+    kafkaDependecyMocked.mockImplementationOnce(() => ({
+      producer: producerKafkaMock,
+      logger: jest.fn().mockReturnValueOnce({
+        debug: jest.fn(),
+        error: jest.fn(),
+      }),
+    } as never));
+    const brokerKafka = createBroker({ type: 'kafka', kafkaOption: { topic: 'test', groupId: '123', brokers: ['broker'] }, onCrash: () => {} });
+    brokerKafka.setError('err');
+    pool.setError('err');
+    pool.addBroker('kafka', brokerKafka);
+    const spy = jest.spyOn(producerObject, 'connect');
+    await pool.getBroker('kafka').producer.publish('', { data: {} }, {});
+    expect(spy).toHaveBeenCalled();
   });
 });

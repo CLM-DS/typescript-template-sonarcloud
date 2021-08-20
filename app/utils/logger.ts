@@ -5,8 +5,7 @@ const createLogger = (optionsIn?: LoggerOptions): Logger => {
   const name = process.env.APP_NAME;
   const enable = !!process.env.LOG_ENABLED;
   const options = optionsIn || {
-    enabled:
-      enable || ['production', 'qa'].includes(env),
+    enabled: enable || ['production', 'qa'].includes(env),
     name,
     level: process.env.LOG_LEVEL || (env === 'production' ? 'info' : 'debug'),
     customLevels: { healthy: 0 },

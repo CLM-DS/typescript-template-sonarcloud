@@ -28,7 +28,7 @@ describe('Test Cases: Status Service', () => {
   it('Test Status Healthy Success with Broker and Pool', () => {
     const ctxMock = createMockContext();
     ctxMock.log = createMockLogger;
-    ctxMock.config = { brokerConfig: { kafka: { type: 'kafka' } } };
+    ctxMock.config = { brokerConfig: { kafkaProducer: { type: 'kafka', onCrash: () => {} } } };
     ctxMock.pool = createMockPool(true);
     const res = statusService.healthy(ctxMock);
     expect(res.status).toEqual(httpStatus.statusCodes.OK);
@@ -51,7 +51,7 @@ describe('Test Cases: Status Service', () => {
   it('Test Status Healthy Failure with empty Broker', () => {
     const ctxMock = createMockContext();
     ctxMock.log = createMockLogger;
-    ctxMock.config = { brokerConfig: { kafka: { type: 'kafka' } } };
+    ctxMock.config = { brokerConfig: { kafkaProducer: { type: 'kafka', onCrash: () => {} } } };
     const res = statusService.healthy(ctxMock);
     expect(res.status).toEqual(httpStatus.statusCodes.SERVICE_UNAVAILABLE);
   });
@@ -83,14 +83,14 @@ describe('Test Cases: Status Service', () => {
   it('Test Status Alive Success with Pool', () => {
     const ctxMock = createMockContext();
     ctxMock.pool = createMockPool(true);
-    ctxMock.config = { brokerConfig: { kafkaConsumer: { type: 'kafka' } } };
+    ctxMock.config = { brokerConfig: { kafkaConsumer: { type: 'kafka', onCrash: () => {} } } };
     const res = statusService.alive(ctxMock);
     expect(res.status).toEqual(httpStatus.statusCodes.OK);
   });
 
   it('Test Status Alive Failure with no Pool', () => {
     const ctxMock = createMockContext();
-    ctxMock.config = { brokerConfig: { kafkaConsumer: { type: 'kafka' } } };
+    ctxMock.config = { brokerConfig: { kafkaConsumer: { type: 'kafka', onCrash: () => {} } } };
     const res = statusService.alive(ctxMock);
     expect(res.status).toEqual(httpStatus.statusCodes.SERVICE_UNAVAILABLE);
   });

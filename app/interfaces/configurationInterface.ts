@@ -1,5 +1,5 @@
 import { LoggerOptions } from 'pino';
-import { BrokerConfig } from './brokerPublisherInterface';
+import { BrokerConfigInterface } from './brokerConfigInterface';
 
 export interface ConfigurationInterface {
   /**
@@ -22,11 +22,8 @@ export interface ConfigurationInterface {
    * LoggerOptions
    */
   log?: LoggerOptions;
-}
-
-export interface BrokerConfigurationInterface extends ConfigurationInterface {
   /**
    * Broker Configuration
    */
-  brokerConfig?: BrokerConfig,
+  brokerConfig?: BrokerConfigInterface,
 }

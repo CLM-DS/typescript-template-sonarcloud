@@ -1,12 +1,12 @@
 import { WrapperDBInterface } from 'app/utils/wrapperDB';
 import { Logger } from 'pino';
-import { BrokerConfigurationInterface } from './configurationInterface';
+import { ConfigurationInterface } from './configurationInterface';
 
 export interface ListenerInterface {
   /**
    * MicroService Default Prefix
    */
-  options: BrokerConfigurationInterface,
+  options: ConfigurationInterface,
   /**
    * Listening Port Number
    */

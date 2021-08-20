@@ -12,7 +12,7 @@ export interface PoolInterface {
   /**
    * Consumer
    */
-  map: (func: (arg0: BrokerInterface) => BrokerInterface) => Array<BrokerInterface>,
+  map: (func: (arg0: BrokerInterface) => BrokerInterface) => BrokerInterface[],
   /**
    * Set Error Function
    */

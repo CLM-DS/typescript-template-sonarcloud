@@ -1,7 +1,7 @@
 import { Consumer, Kafka } from 'kafkajs';
 import { ServiceBusClient } from '@azure/service-bus';
 import { PubSub } from '@google-cloud/pubsub';
-import { BrokerConsumerInterface, BrokerPublisherInterface, ListenerConfigurationInterface } from '../../interfaces';
+import { BrokerConsumerInterface, BrokerTypeInterface, ListenerConfigurationInterface } from '../../interfaces';
 import { KafkaConfigConsumer } from '../../interfaces/kafka';
 
 type BrokerClientType = Kafka | ServiceBusClient | PubSub | null;
@@ -13,7 +13,7 @@ type BrokerClientType = Kafka | ServiceBusClient | PubSub | null;
  * @returns {Consumer}
  */
 const createConsumer = (
-  brokerClient: BrokerClientType, brokerOptions: BrokerPublisherInterface,
+  brokerClient: BrokerClientType, brokerOptions: BrokerTypeInterface,
 ): BrokerConsumerInterface => {
   /**
    * @callback messageReceived
@@ -101,11 +101,13 @@ const createConsumer = (
 
       try {
         await consumer.disconnect();
-        process.exit(0);
+        // process.exit(0);
       } catch (er) {
         client.logger().error('Failed to gracefully disconnect Kafka consumer', er);
-        process.exit(1);
+        // process.exit(1);
       }
+
+      brokerOptions.onCrash(error);
     });
 
     // Assign consumer

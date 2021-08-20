@@ -5,11 +5,7 @@ interface KafkaOption extends KafkaConfig {
   groupId: string
 }
 
-export interface BrokerConfig {
-  [alias: string]: BrokerPublisherInterface
-}
-
-export interface BrokerPublisherInterface {
+export interface BrokerTypeInterface {
   /**
    * Option type
    */
@@ -22,4 +18,12 @@ export interface BrokerPublisherInterface {
    * Service Bus
    */
   serviceBusStrCnn?: string,
+  /**
+   * Callback value for critical errors
+   */
+  onCrash: (error: string) => void,
+}
+
+export interface BrokerConfigInterface {
+  [alias: string]: BrokerTypeInterface
 }

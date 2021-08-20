@@ -40,12 +40,13 @@ const useMiddleware = (args: MiddlewareInterface): Koa => {
     options,
     pool,
     db,
+    logger,
   } = args;
   app.use(bodyParser());
   // errorMiddleware must not move, this must be the first middleware to be used
   app.use(errorMiddleware(app));
   app.use(configMiddleware(options));
-  app.use(loggerMiddleware());
+  app.use(loggerMiddleware(logger));
   app.use(interceptorMiddleware());
   app.use(monitorMiddleware());
   app.use(mongoMiddleware(db));

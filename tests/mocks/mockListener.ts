@@ -7,6 +7,7 @@ export const createMockListener = {
       kafkaConsumer: {
         type: 'kafka' as const,
         kafkaOption: { topic: 'test', groupId: 'test', brokers: ['broker'] },
+        onCrash: (): void => {},
       },
     },
   },

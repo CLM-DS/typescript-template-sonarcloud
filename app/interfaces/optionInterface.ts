@@ -14,5 +14,5 @@ export interface OptionInterface {
   /**
    * MS Keys
    */
-  keys: Array<string>,
+  keys: string[],
 }

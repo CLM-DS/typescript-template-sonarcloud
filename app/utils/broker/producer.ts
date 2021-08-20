@@ -1,12 +1,14 @@
 import { ServiceBusClient } from '@azure/service-bus';
 import { PubSub } from '@google-cloud/pubsub';
 import {
+  Kafka, Message, Producer, ProducerRecord,
+} from 'kafkajs';
+import xss from 'xss';
+import { BrokerTypeInterface } from '../../interfaces/brokerConfigInterface';
+import {
   ArgsBroker, BrokerClientType, BrokerProducerInterface,
   MessageBroker, MessageBrokerValue, TopicBroker,
-} from '@models/brokerProducerInterface';
-import { BrokerPublisherInterface } from '@models/brokerPublisherInterface';
-import { Kafka, Message, ProducerRecord } from 'kafkajs';
-import xss from 'xss';
+} from '../../interfaces/brokerProducerInterface';
 
 /**
  * create producer from event
@@ -15,28 +17,50 @@ import xss from 'xss';
  * @returns {Producer}
  */
 const createProducer = (
-  brokerClient: BrokerClientType, brokerOptions: BrokerPublisherInterface,
+  brokerClient: BrokerClientType, brokerOptions: BrokerTypeInterface,
 ): BrokerProducerInterface => {
   const defaultRecord = {
     topic: '',
     data: undefined,
     attrs: undefined,
   };
+  let brokerProducer: Producer;
 
   /**
    *
    * @param {Kafka} client
    * @param {import('kafkajs').ProducerRecord} record
    */
-  const publishMessageKafka = async (client: BrokerClientType, record: ProducerRecord) => {
+  const publishMessageKafka = async (client: Kafka, record: ProducerRecord) => {
     /**
      * @type {import('kafkajs').Producer}
      */
-    const producerKafka = (client as Kafka).producer();
-    await producerKafka.connect();
-    const res = await producerKafka.send(record);
-    await producerKafka.disconnect();
-    return res;
+    const producer = brokerProducer || client.producer();
+
+    const produce = async () => {
+      if (!brokerProducer) {
+        await producer.connect();
+      }
+
+      return producer.send(record);
+    };
+
+    // Check for errors during execution and restart or exit
+    produce().catch(async (error) => {
+      client.logger().error('Kafka producer error', error);
+
+      try {
+        await producer.disconnect();
+        // process.exit(0);
+      } catch (er) {
+        client.logger().error('Failed to gracefully disconnect Kafka producer', er);
+        // process.exit(1);
+      }
+
+      brokerOptions.onCrash(error);
+    });
+
+    brokerProducer = producer;
   };
 
   /**
@@ -44,13 +68,12 @@ const createProducer = (
    * @param {PubSub} client
    */
   const publishMessagePubSub = (
-    client: BrokerClientType,
-    record: ArgsBroker & MessageBrokerValue & TopicBroker = defaultRecord,
+    client: PubSub, record: ArgsBroker & MessageBrokerValue & TopicBroker = defaultRecord,
   ) => {
     /**
      * @type {import("@google-cloud/pubsub").Topic}
      */
-    const topicInstance = (client as PubSub).topic(record.topic);
+    const topicInstance = client.topic(record.topic);
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     let dataStr: string | undefined = record.data;
 
@@ -67,13 +90,12 @@ const createProducer = (
    */
 
   const publishMessageServiceBus = (
-    client: BrokerClientType,
-    record: ArgsBroker & MessageBrokerValue & TopicBroker = defaultRecord,
+    client: ServiceBusClient, record: ArgsBroker & MessageBrokerValue & TopicBroker = defaultRecord,
   ) => {
     /**
      * @type {import("@azure/service-bus").ServiceBusSender}
      */
-    const queueInstance = (client as ServiceBusClient).createSender(record.topic);
+    const queueInstance = client.createSender(record.topic);
     return queueInstance.sendMessages({
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       body: JSON.parse(xss(JSON.stringify(record.data))),
@@ -87,20 +109,20 @@ const createProducer = (
   ) => {
     switch (brokerOptions.type) {
       case 'kafka':
-        return publishMessageKafka(brokerClient, {
+        return publishMessageKafka(brokerClient as Kafka, {
           topic,
           messages: [message as Message],
           acks: args.acks,
           compression: args.compression,
         });
       case 'pubsub':
-        return publishMessagePubSub(brokerClient, {
+        return publishMessagePubSub(brokerClient as PubSub, {
           ...args,
           ...message as MessageBrokerValue,
           topic,
         });
       case 'servicebus':
-        return publishMessageServiceBus(brokerClient, {
+        return publishMessageServiceBus(brokerClient as ServiceBusClient, {
           ...args,
           ...message as MessageBrokerValue,
           topic,

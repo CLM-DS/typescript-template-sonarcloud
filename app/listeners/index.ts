@@ -1,11 +1,9 @@
 import { createBroker, createPool } from '../utils/broker';
-import { BrokerConfigurationInterface } from '../interfaces/configurationInterface';
-import { ListenerInterface, PoolInterface } from '../interfaces';
+import { BrokerConfigInterface, ListenerInterface, PoolInterface } from '../interfaces';
 
-const createBrokers = (options: BrokerConfigurationInterface) => {
+const createBrokers = (brokers: BrokerConfigInterface) => {
   const pool = createPool();
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const entries = Object.entries(options.brokerConfig!);
+  const entries = Object.entries(brokers);
 
   entries.forEach((entry) => {
     pool.addBroker(entry[0], createBroker(entry[1]));
@@ -13,6 +11,7 @@ const createBrokers = (options: BrokerConfigurationInterface) => {
 
   return pool;
 };
+
 /**
  * Configure all middleware to application
  * @param {*} args
@@ -26,7 +25,7 @@ const useListeners = (args: ListenerInterface): PoolInterface | undefined => {
     && options.brokerConfig
     && Object.keys(options.brokerConfig).length > 0
   ) {
-    return createBrokers(options);
+    return createBrokers(options.brokerConfig);
   }
 
   return undefined;

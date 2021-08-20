@@ -10,19 +10,22 @@ export interface BrokerProducerInterface {
    */
   publish: (
     topic: string, message: MessageBroker, args?: ArgsBroker
-  ) => Promise<string> | Promise<Array<RecordMetadata>> | Promise<void>;
+  ) => Promise<string> | Promise<RecordMetadata[]> | Promise<void>;
 }
+
 export type MessageBrokerValue = {
   data: string | any;
 };
+
 export type TopicBroker = {
   topic: string
 };
+
 export type ArgsBroker = {
   acks?: number;
   compression?: CompressionTypes;
   attrs?: Attributes;
 };
-export type MessageBroker = MessageBrokerValue | Message;
 
+export type MessageBroker = MessageBrokerValue | Message;
 export type BrokerClientType = Kafka | ServiceBusClient | PubSub | null;

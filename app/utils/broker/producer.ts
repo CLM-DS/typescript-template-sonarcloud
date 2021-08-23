@@ -57,7 +57,9 @@ const createProducer = (
         // process.exit(1);
       }
 
-      brokerOptions.onCrash(error);
+      if (brokerOptions.onCrash) {
+        brokerOptions.onCrash(error);
+      }
     });
 
     brokerProducer = producer;

@@ -21,7 +21,7 @@ export interface BrokerTypeInterface {
   /**
    * Callback value for critical errors
    */
-  onCrash: (error: string) => void,
+  onCrash?: (error: string) => void,
 }
 
 export interface BrokerConfigInterface {

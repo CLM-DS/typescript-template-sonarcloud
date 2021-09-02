@@ -1,4 +1,4 @@
-import { Consumer, Kafka } from 'kafkajs';
+import { Kafka } from 'kafkajs';
 import { ServiceBusClient } from '@azure/service-bus';
 import { PubSub } from '@google-cloud/pubsub';
 import { BrokerConsumerInterface, BrokerTypeInterface, ListenerConfigurationInterface } from '../../interfaces';
@@ -32,7 +32,6 @@ const createConsumer = (
    * @property {String} [topic]
    */
 
-  let brokerReceiver: Consumer;
   const messageProcessor: { [key: string]: ListenerConfigurationInterface } = {};
 
   /**
@@ -44,18 +43,13 @@ const createConsumer = (
     /**
      * @type {import('kafkajs').Consumer}
      */
-    const consumer = brokerReceiver || client.consumer({
+    const consumer = client.consumer({
       groupId: (brokerOptions.kafkaOption as KafkaConfigConsumer).groupId as string,
     });
 
     const consume = async () => {
-      if (!brokerReceiver) {
-        await consumer.connect();
-      }
-
-      await consumer.subscribe({
-        topic: options.topic,
-      });
+      await consumer.connect();
+      await consumer.subscribe({ topic: options.topic });
 
       messageProcessor[options.topic] = options;
 
@@ -111,9 +105,6 @@ const createConsumer = (
         brokerOptions.onCrash(error);
       }
     });
-
-    // Assign consumer
-    brokerReceiver = consumer;
   };
 
   /**

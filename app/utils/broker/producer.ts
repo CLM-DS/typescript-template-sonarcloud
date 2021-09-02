@@ -1,8 +1,6 @@
 import { ServiceBusClient } from '@azure/service-bus';
 import { PubSub } from '@google-cloud/pubsub';
-import {
-  Kafka, Message, Producer, ProducerRecord,
-} from 'kafkajs';
+import { Kafka, Message, ProducerRecord } from 'kafkajs';
 import xss from 'xss';
 import { BrokerTypeInterface } from '../../interfaces/brokerConfigInterface';
 import {
@@ -24,7 +22,6 @@ const createProducer = (
     data: undefined,
     attrs: undefined,
   };
-  let brokerProducer: Producer;
 
   /**
    *
@@ -35,13 +32,10 @@ const createProducer = (
     /**
      * @type {import('kafkajs').Producer}
      */
-    const producer = brokerProducer || client.producer();
+    const producer = client.producer();
 
     const produce = async () => {
-      if (!brokerProducer) {
-        await producer.connect();
-      }
-
+      await producer.connect();
       return producer.send(record);
     };
 
@@ -61,8 +55,6 @@ const createProducer = (
         brokerOptions.onCrash(error);
       }
     });
-
-    brokerProducer = producer;
   };
 
   /**

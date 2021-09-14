@@ -1,30 +1,33 @@
-import mongoMocks from '../mocks/mockMongo';
-import { mockConfigSimple } from '../mocks/mockMongoConfig';
-import * as wrapper from '../../app/utils/wrapperDB';
-import { MongoClient } from 'mongodb';
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 jest.mock('mongodb');
 
+import { MongoClient } from 'mongodb';
+import mongoMocks from '../mocks/mockMongo';
+import { createMockMongoConfig } from '../mocks/mockMongoConfig';
+import * as wrapper from '../../app/utils/wrapperDB';
+
 describe('Test Cases: wrapperDB', () => {
-  /**
-   * @type {import("mongodb").MongoClient}
-   */
   let client: MongoClient | undefined;
   let db: jest.MockedFunction<any>;
 
   beforeEach(() => {
-    client = wrapper.connect(mockConfigSimple);
+    client = wrapper.connect(createMockMongoConfig);
     db = (client as MongoClient).db;
   });
+
   it('Test Find One', async () => {
     db.mockReturnValueOnce(mongoMocks.mockFindOne);
     const data = await wrapper.findOne('test', {});
     expect(data).not.toEqual(undefined);
   });
+
   it('Test Find', async () => {
     db.mockReturnValueOnce(mongoMocks.mockFind);
     const data = await wrapper.find('test', {});
     expect(data).not.toEqual(undefined);
   });
+
   it('Test Create', async () => {
     db.mockReturnValueOnce(mongoMocks.mockInsertOne);
     const data = await wrapper.create('', { test: 'test', _id: '' });

@@ -1,5 +1,4 @@
-import { BrokerConfigurationInterface } from '@models/configurationInterface';
-import { Context } from 'koa'
+import { Context } from 'koa';
 import { httpStatus, serverStatus } from '../constants';
 
 /**
@@ -7,7 +6,7 @@ import { httpStatus, serverStatus } from '../constants';
  * @returns {boolean}
  */
 const checkDB = (ctx: Context) => {
-  const { config = {} as BrokerConfigurationInterface, db } = ctx;
+  const { config = {}, db } = ctx;
 
   if (config.mongoUri && db) {
     return true;
@@ -25,10 +24,13 @@ const checkDB = (ctx: Context) => {
  * @returns {boolean}
  */
 const checkBroker = (ctx: Context) => {
-  const { config = {} as BrokerConfigurationInterface, pool } = ctx;
+  const { config = {}, pool } = ctx;
 
   if (config.brokerConfig && Object.keys(config.brokerConfig).length > 0 && pool) {
-    return true;
+    const aliases = Object.keys(config.brokerConfig);
+    const brokersError = aliases.map((alias) => (!!pool.getBroker(alias).haveError()));
+
+    return !pool.haveError() && !brokersError.includes(true);
   }
 
   if (!config.brokerConfig || Object.keys(config.brokerConfig).length === 0) {
@@ -58,7 +60,7 @@ const checkCtx = (ctx: Context) => {
  */
 const healthy = (ctx: Context): Context => {
   const status = checkCtx(ctx);
-  
+
   if (!status) {
     ctx.status = httpStatus.statusCodes.SERVICE_UNAVAILABLE;
   } else {
@@ -73,7 +75,7 @@ const healthy = (ctx: Context): Context => {
 };
 
 const isAliveDB = (ctx: Context) => {
-  const { config = {} as BrokerConfigurationInterface, db } = ctx;
+  const { config = {}, db } = ctx;
 
   if (config.mongoUri && db && db.isConnected()) {
     return true;
@@ -87,7 +89,7 @@ const isAliveDB = (ctx: Context) => {
 };
 
 const isAlivePool = (ctx: Context) => {
-  const { config = {} as BrokerConfigurationInterface, pool } = ctx;
+  const { config = {}, pool } = ctx;
   const haveBrokerConfig = config.brokerConfig && Object.keys(config.brokerConfig).length > 0;
 
   if (haveBrokerConfig && pool && !pool.haveError()) {
@@ -118,4 +120,4 @@ const alive = (ctx: Context): Context => {
   return ctx;
 };
 
- export { alive, healthy };
+export { alive, healthy };

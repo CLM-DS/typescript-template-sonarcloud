@@ -1,5 +1,5 @@
-import { brokerMiddleware } from '../../app/server/middlewares/brokerMiddleware';
 import { createMockContext } from '@shopify/jest-koa-mocks';
+import { brokerMiddleware } from '../../app/server/middlewares/brokerMiddleware';
 import { createMockPool } from '../mocks/mockPool';
 
 describe('Test Cases: brokerMiddleware', () => {

@@ -1,11 +1,11 @@
 import { Kafka, KafkaConfig } from 'kafkajs';
-import { PubSub }  from '@google-cloud/pubsub';
+import { PubSub } from '@google-cloud/pubsub';
 import { ServiceBusClient } from '@azure/service-bus';
 import { createProducer } from './producer';
 import { createConsumer } from './consumer';
-import { BrokerInterface, BrokerPublisherInterface, PoolInterface } from '../../interfaces';
+import { BrokerInterface, BrokerTypeInterface, PoolInterface } from '../../interfaces';
 
-type BrokerClientType = Kafka | ServiceBusClient | PubSub | null
+type BrokerClientType = Kafka | ServiceBusClient | PubSub | null;
 
 /**
  * @typedef {Object} KafkaOption
@@ -23,25 +23,26 @@ type BrokerClientType = Kafka | ServiceBusClient | PubSub | null
 /**
  * @param {BrokerPublisherOption} brokerOptions
  */
-const createBroker = (brokerOptions: BrokerPublisherInterface): BrokerInterface => {
+const createBroker = (brokerOptions: BrokerTypeInterface): BrokerInterface => {
   /**
    * @type {(ServiceBusClient|Kafka|PubSub)}
    */
   let brokerClient: BrokerClientType = null;
 
   /**
-   * create client kafak
+   * create client Kafka
    * @param {KafkaOption} options
    */
-  const createKafka = (options: BrokerPublisherInterface['kafkaOption']) => new Kafka(options as KafkaConfig);
+  const createKafka = (options: BrokerTypeInterface['kafkaOption']) => new Kafka(options as KafkaConfig);
 
   const createPubSub = () => new PubSub();
 
-  const createServiceBus = (strConn: BrokerPublisherInterface['serviceBusStrCnn']) => new ServiceBusClient(strConn as string);
+  const createServiceBus = (strConn: BrokerTypeInterface['serviceBusStrCnn']) => new ServiceBusClient(strConn as string);
   /**
    * @type {boolean|String}
    */
   let err: string | boolean = false;
+  let producerKafka;
 
   /**
    * create publisher instance to create message
@@ -66,16 +67,11 @@ const createBroker = (brokerOptions: BrokerPublisherInterface): BrokerInterface 
     }
   };
 
-  initBroker();
-  const brokerProducer = createProducer(brokerClient, brokerOptions);
-  const brokerConsumer = createConsumer(brokerClient, brokerOptions);
-  let producerKafka;
-  
   const check = async () => {
     if (!brokerClient) {
       throw new Error('Broker client not found');
     }
-    
+
     switch (brokerOptions.type) {
       case 'kafka':
         producerKafka = (brokerClient as Kafka).producer();
@@ -91,16 +87,28 @@ const createBroker = (brokerOptions: BrokerPublisherInterface): BrokerInterface 
         throw new Error('type invalid');
     }
   };
+
   const setError = (error: string | boolean) => {
     err = error;
   };
+
   const haveError = () => err;
+
+  initBroker();
+
+  // set critical error callback
+  const options = { ...brokerOptions };
+  options.onCrash = (error) => setError(error);
+
+  const brokerProducer = createProducer(brokerClient, options);
+  const brokerConsumer = createConsumer(brokerClient, options);
+
   return {
     check,
-    producer: brokerProducer,
-    consumer: brokerConsumer,
     setError,
     haveError,
+    producer: brokerProducer,
+    consumer: brokerConsumer,
   };
 };
 
@@ -132,10 +140,14 @@ const createBroker = (brokerOptions: BrokerPublisherInterface): BrokerInterface 
 const createPool = (): PoolInterface => {
   const pool: Record<string, BrokerInterface> = {};
   const aliases: Array<string> = [];
+  let err: boolean | string = false;
+
   const addBroker = (alias: string, broker: BrokerInterface) => {
     pool[alias] = broker;
     aliases.push(alias);
-  };/**
+  };
+
+  /**
    * get broker instance by alias
    * @param {String} alias
    * @returns {Broker}
@@ -147,13 +159,17 @@ const createPool = (): PoolInterface => {
     }
     return broker;
   };
-  const map = (func: (arg0: BrokerInterface) => BrokerInterface) => aliases.map((alias) => func(pool[alias]));
 
-  let err: boolean | string = false;
+  const map = (func: (arg0: BrokerInterface) => BrokerInterface) => aliases.map(
+    (alias) => func(pool[alias]),
+  );
+
   const setError = (error: boolean | string) => {
     err = error;
   };
+
   const haveError = () => err;
+
   return {
     addBroker,
     getBroker,

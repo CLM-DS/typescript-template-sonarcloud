@@ -1,16 +1,18 @@
-import kafkajs from 'kafkajs';
-import { createPool, createBroker } from '../../app/utils/broker';
-
 jest.mock('kafkajs');
 jest.mock('@google-cloud/pubsub');
 jest.mock('@azure/service-bus');
 
+import kafkajs from 'kafkajs';
+import { PubSub } from '@google-cloud/pubsub';
+import { createPool, createBroker } from '../../app/utils/broker';
+
 describe('Test Cases: Broker utils', () => {
   it('Test Case Create Broker Success', () => {
     const pool = createPool();
-    const brokerKafka = createBroker({ type: 'kafka', kafkaOption: { groupId: '123', brokers: ['broker'] }});
-    const brokerPubSub = createBroker({ type: 'pubsub' });
-    const brokerServiceBus = createBroker({ type: 'servicebus', serviceBusStrCnn: '' });
+    const brokerKafkaConfig = { type: 'kafka' as const, kafkaOption: { topic: 'test', groupId: '123', brokers: ['broker'] }, onCrash: () => {} };
+    const brokerKafka = createBroker(brokerKafkaConfig);
+    const brokerPubSub = createBroker({ type: 'pubsub', onCrash: () => {} });
+    const brokerServiceBus = createBroker({ type: 'servicebus', serviceBusStrCnn: '', onCrash: () => {} });
 
     expect(pool).toBeDefined();
     expect(brokerKafka.haveError()).toEqual(false);
@@ -19,7 +21,7 @@ describe('Test Cases: Broker utils', () => {
   });
 
   it('Test Case Create Broker Failure', () => {
-    const brokerFail = createBroker({ type: 'kafka' });
+    const brokerFail = createBroker({ type: 'kafka', onCrash: () => {} });
     expect(brokerFail.haveError()).toBeDefined();
   });
 
@@ -28,14 +30,11 @@ describe('Test Cases: Broker utils', () => {
     kafkaMock.Kafka.mockReturnValueOnce({
       producer: jest.fn().mockReturnValueOnce({
         connect: jest.fn(() => Promise.resolve()),
-        disconnect: jest.fn(() => Promise.resolve())
+        disconnect: jest.fn(() => Promise.resolve()),
       }),
-      consumer: jest.fn(), 
-      admin: jest.fn(), 
-      logger: jest.fn()
-    });
+    } as any);
     const pool = createPool();
-    const brokerKafka = createBroker({ type: 'kafka', kafkaOption: { groupId: '123', brokers: ['broker'] }});
+    const brokerKafka = createBroker({ type: 'kafka', kafkaOption: { topic: 'test', groupId: '123', brokers: ['broker'] }, onCrash: () => {} });
     pool.addBroker('kafka', brokerKafka);
     expect(pool).toBeDefined();
     expect(() => { pool.getBroker('kafka'); }).not.toThrow();
@@ -44,14 +43,29 @@ describe('Test Cases: Broker utils', () => {
 
   it('Test Case Create Broker ServiceBus check success', async () => {
     const pool = createPool();
-    const brokerServiceBus = createBroker({ type: 'servicebus', serviceBusStrCnn: '' });
+    const brokerServiceBus = createBroker({ type: 'servicebus', serviceBusStrCnn: '', onCrash: () => {} });
     pool.addBroker('servicebus', brokerServiceBus);
     expect(pool).toBeDefined();
     expect(() => { pool.getBroker('servicebus'); }).not.toThrow();
     expect(await brokerServiceBus.check()).toEqual(true);
   });
 
-  it('Test Case Create Broker check failure', async () => {
+  it('Test Case Create Broker PubSub check success', async () => {
+    const pubSubMock = <jest.Mock<PubSub>><unknown>PubSub;
+    pubSubMock.mockReturnValueOnce({
+      auth: {
+        getAccessToken: jest.fn(() => Promise.resolve()),
+      },
+    } as any);
+    const pool = createPool();
+    const brokerPubSub = createBroker({ type: 'pubsub', onCrash: () => {} });
+    pool.addBroker('pubsub', brokerPubSub);
+    expect(pool).toBeDefined();
+    expect(() => { pool.getBroker('pubsub'); }).not.toThrow();
+    expect(await brokerPubSub.check()).toEqual(true);
+  });
+
+  it('Test Case Create Broker check failure', () => {
     const pool = createPool();
     expect(pool).toBeDefined();
     expect(() => { pool.getBroker('kafka'); }).toThrow();

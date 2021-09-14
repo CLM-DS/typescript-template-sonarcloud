@@ -8,7 +8,7 @@ import { OptionInterface, SecretInterface } from '../interfaces';
  * @returns {SecretInterface}
  */
 const loadSecrets = async (options: OptionInterface, mode: string): Promise<SecretInterface> => {
-  let secrets: { [key: string]: string } | NodeJS.ProcessEnv = {}
+  let secrets: { [key: string]: string } | NodeJS.ProcessEnv = {};
 
   if (mode === 'online') {
     const client = new SecretManagerServiceClient();
@@ -18,9 +18,9 @@ const loadSecrets = async (options: OptionInterface, mode: string): Promise<Secr
 
     for (let index = 0; index < listSecrets.length; index++) {
       const secret = listSecrets[index];
-      const name = secret.name!.toString();
+      const name = secret.name?.toString();
       let env = options.env.toUpperCase();
-      
+
       if (!env.startsWith('_')) {
         env = `_${env}`;
       }
@@ -33,11 +33,12 @@ const loadSecrets = async (options: OptionInterface, mode: string): Promise<Secr
         if (options.keys.length > 0 && options.keys.indexOf(keyName) < 0) {
           continue;
         }
-        
+
+        // eslint-disable-next-line no-await-in-loop
         const [version] = await client.accessSecretVersion({
           name: `${name}/versions/${options.version}`,
         });
-        secrets[keyName] = version.payload!.data!.toString();
+        secrets[keyName] = version.payload?.data?.toString();
       }
     }
   } else {
@@ -47,13 +48,13 @@ const loadSecrets = async (options: OptionInterface, mode: string): Promise<Secr
   return {
     get: (name: string) => {
       const secret = secrets[name.toUpperCase()];
-      
+
       if (!secret) {
         throw new Error(`${name} in secret variables not found`);
       }
 
       return secret;
-    }
+    },
   };
 };
 

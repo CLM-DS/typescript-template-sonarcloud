@@ -1,14 +1,13 @@
 import { Logger } from 'pino';
-import { WrapperDB } from '../utils/wrapperDB';
+import { WrapperDBInterface } from '../utils/wrapperDB';
 import { PoolInterface } from './poolInterface';
-import { BrokerConfigurationInterface } from './configurationInterface';
+import { ConfigurationInterface } from './configurationInterface';
 
-declare module "koa" {
-    interface Context {
-      config: BrokerConfigurationInterface;
-      pool?: PoolInterface; 
-      db?: WrapperDB; 
-      log: Logger;
-    }
+declare module 'koa' {
+  interface Context {
+    config: ConfigurationInterface;
+    pool?: PoolInterface;
+    db?: WrapperDBInterface;
+    log: Logger;
   }
-  
+}

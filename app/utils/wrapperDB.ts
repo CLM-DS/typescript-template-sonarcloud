@@ -1,4 +1,8 @@
-import { FilterQuery, InsertOneWriteOpResult, InsertWriteOpResult, MongoClient, UpdateQuery, UpdateWriteOpResult } from 'mongodb';
+/* eslint-disable import/no-mutable-exports */
+import {
+  FilterQuery, InsertOneWriteOpResult, InsertWriteOpResult,
+  MongoClient, UpdateQuery, UpdateWriteOpResult,
+} from 'mongodb';
 import { ConfigurationInterface } from '../interfaces/configurationInterface';
 import { createLogger } from './logger';
 
@@ -39,11 +43,11 @@ const connect: Connect = (options) => {
     if (resp && resp.message) {
       logger.error(resp);
     } else {
-      dataSource = options.dataSource as  string;
+      dataSource = options.dataSource as string;
       logger.info('DB Connection Success');
     }
   });
-  
+
   return client;
 };
 
@@ -53,7 +57,7 @@ const connect: Connect = (options) => {
  * @param {import('mongodb').FilterQuery} query
  * @returns {Promise<*>}
  */
-export type FindOne = <T>(collection: string, query: FilterQuery<T>) => Promise<T>
+export type FindOne = <T>(collection: string, query: FilterQuery<T>) => Promise<unknown>;
 const findOne: FindOne = (collection, query = {}) => {
   const database = client.db(dataSource);
   return database.collection(collection).findOne(query);
@@ -65,7 +69,7 @@ const findOne: FindOne = (collection, query = {}) => {
  * @param {import('mongodb').FilterQuery} query
  * @returns {Promise<[*]>}
  */
-export type Find = <T>(collection: string, query: FilterQuery<T>) => Promise<T[]>;
+export type Find = <T>(collection: string, query: FilterQuery<T>) => Promise<unknown[]>;
 const find: Find = (collection, query = {}) => {
   const database = client.db(dataSource);
   return database.collection(collection).find(query).toArray();
@@ -77,7 +81,8 @@ const find: Find = (collection, query = {}) => {
  * @param {*} data
  * @returns {Promise<import('mongodb').InsertOneWriteOpResult>}
  */
-export type Create = <T extends { _id: any }>(collection: string, data: T) => Promise<InsertOneWriteOpResult<T>>;
+export type Create = <T extends { _id: any }>
+(collection: string, data: T) => Promise<InsertOneWriteOpResult<any>>;
 const create: Create = (collection, data) => {
   const database = client.db(dataSource);
   return database.collection(collection).insertOne(data);
@@ -89,7 +94,8 @@ const create: Create = (collection, data) => {
  * @param {[*]} data
  * @returns {Promise<import('mongodb').InsertWriteOpResult>}
  */
-export type CreateBatch = <T extends { _id: any }>(collection: string, data: T[]) => Promise<InsertWriteOpResult<T>>;
+export type CreateBatch = <T extends { _id: any }>
+(collection: string, data: T[]) => Promise<InsertWriteOpResult<any>>;
 const createBatch: CreateBatch = (collection, data) => {
   const database = client.db(dataSource);
   return database.collection(collection).insertMany(data);
@@ -102,7 +108,8 @@ const createBatch: CreateBatch = (collection, data) => {
  * @param {*} dataUpdate data partial or complete from document to update
  * @returns {Promise<import('mongodb').UpdateWriteOpResult>}
  */
-export type Update = <T>(collection: string, filter: FilterQuery<T>, data: UpdateQuery<T>) => Promise<UpdateWriteOpResult>;
+export type Update = <T>
+(collection: string, filter: FilterQuery<T>, data: UpdateQuery<T>) => Promise<UpdateWriteOpResult>;
 const update: Update = (collection, filter, dataUpdate) => {
   const database = client.db(dataSource);
   return database.collection(collection).updateOne(filter, dataUpdate);
@@ -115,7 +122,8 @@ const update: Update = (collection, filter, dataUpdate) => {
  * @param {*} data data partial or complete from document to update
  * @returns {Promise<import('mongodb').UpdateWriteOpResult>}
  */
-export type UpdateBatch = <T>(collection: string, filter: FilterQuery<T>, data: UpdateQuery<T>) => Promise<UpdateWriteOpResult>;
+export type UpdateBatch = <T>
+(collection: string, filter: FilterQuery<T>, data: UpdateQuery<T>) => Promise<UpdateWriteOpResult>;
 const updateBatch: UpdateBatch = (collection, filter, dataUpdate) => {
   const database = client.db(dataSource);
   return database.collection(collection).updateMany(filter, dataUpdate);
@@ -136,7 +144,7 @@ export {
   dataSource,
 };
 
-export interface WrapperDB {
+export interface WrapperDBInterface {
   create: Create,
   createBatch: CreateBatch,
   update: Update,

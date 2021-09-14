@@ -1,6 +1,5 @@
 import Koa, { Context, Next } from 'koa';
 import { statusCodes } from '../../constants/httpStatus';
-import { createLogger } from '../../utils/logger';
 
 /**
  * Handler from error
@@ -8,8 +7,8 @@ import { createLogger } from '../../utils/logger';
  * @param {import('./index').ContextStd} ctx
  */
 const handlerError = (err: Error, ctx: Context) => {
-  const { log = createLogger() } = ctx;
-  
+  const { log } = ctx;
+
   log.error({
     req: ctx.request,
     err,
@@ -31,7 +30,7 @@ const errorMiddleware = (app: Koa) => {
       ctx.status = statusCodes.INTERNAL_SERVER_ERROR;
       ctx.app.emit('error', err, ctx);
     }
-    
+
     return ctx;
   };
 };

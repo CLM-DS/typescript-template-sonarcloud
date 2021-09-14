@@ -1,4 +1,4 @@
-import { IncomingHttpHeaders, OutgoingHttpHeaders } from 'http';
+import { IncomingHttpHeaders, OutgoingHttpHeader, OutgoingHttpHeaders } from 'http';
 
 export interface ContextInterface {
   body: unknown,
@@ -6,5 +6,5 @@ export interface ContextInterface {
   status?: number,
   url?: string,
   method?: string,
-  eventId?: string | string[],
+  eventId?: OutgoingHttpHeader,
 }

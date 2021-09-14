@@ -1,18 +1,18 @@
-import { BrokerConfigurationInterface } from '.';
-import { wrapperDB } from '../utils';
-import { createLogger } from '../utils/logger';
+import { WrapperDBInterface } from 'app/utils/wrapperDB';
+import { Logger } from 'pino';
+import { ConfigurationInterface } from './configurationInterface';
 
 export interface ListenerInterface {
   /**
    * MicroService Default Prefix
    */
-  options: BrokerConfigurationInterface,
+  options: ConfigurationInterface,
   /**
    * Listening Port Number
    */
-  db?: typeof wrapperDB,
+  db?: WrapperDBInterface,
   /**
    * Mongo DataBase URI
    */
-  log: ReturnType<typeof createLogger>,
+  log: Logger,
 }

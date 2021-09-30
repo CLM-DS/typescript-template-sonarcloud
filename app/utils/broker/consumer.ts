@@ -97,7 +97,7 @@ const createConsumer = (
         await consumer.disconnect();
         // process.exit(0);
       } catch (er) {
-        client.logger().error('Failed to gracefully disconnect Kafka consumer', er);
+        client.logger().error('Failed to gracefully disconnect Kafka consumer', er as undefined);
         // process.exit(1);
       }
 

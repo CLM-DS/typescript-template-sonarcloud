@@ -47,7 +47,7 @@ const createProducer = (
         await producer.disconnect();
         // process.exit(0);
       } catch (er) {
-        client.logger().error('Failed to gracefully disconnect Kafka producer', er);
+        client.logger().error('Failed to gracefully disconnect Kafka producer', er as undefined);
         // process.exit(1);
       }
 

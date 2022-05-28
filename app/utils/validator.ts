@@ -150,12 +150,11 @@ const useValidation = (
     return handler(ctx);
   }
 
-  if (options.transform) {
-    ctx.log.error(options.transform(err, ctx), 'Validation Error');
-  }
+  const errMsg = (options.transform ? options.transform(err, ctx) : err) as Record<string, unknown>;
 
+  ctx.log.error(errMsg, 'Validation Error');
   ctx.status = statusCodes.BAD_REQUEST;
-  ctx.body = JSON.parse(xss(JSON.stringify(err)));
+  ctx.body = JSON.parse(xss(JSON.stringify(errMsg)));
   ctx.log.error(err, 'Validation Error');
 
   return ctx;

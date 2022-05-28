@@ -26,4 +26,10 @@ export interface ConfigurationInterface {
    * Broker Configuration
    */
   brokerConfig?: BrokerConfigInterface,
+
+  password?: string,
+
+  user?: string,
+
+  database?: string
 }

@@ -3,7 +3,7 @@ name: CodeAnalysis
 on:
   push:
     branches:
-      - main
+      - master
       - develop
       - feature/**
   pull_request:

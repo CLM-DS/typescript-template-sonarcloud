@@ -10,7 +10,7 @@ export const loadConfig = (secrets: SecretInterface): ConfigurationInterface => 
   port: Number(process.env.PORT || '3000'),
   mongoUri: secrets.get('MONGO_DB_URL') || '',
   dataSource: secrets.get('DATABASE_NAME') || '',
-  password: 'password',
-  user: 'user',
-  database: 'mysql',
+  password: secrets.get('PASSWORD') || '',
+  user: secrets.get('USER') || '',
+  database: secrets.get('DATABASE') || '',
 });

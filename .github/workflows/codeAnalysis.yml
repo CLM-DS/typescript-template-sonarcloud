@@ -70,6 +70,7 @@ jobs:
           -Dsonar.projectKey=${{ env.PROJECT_KEY }}
           -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
           -Dsonar.sources=.
+          -Dsonar.qualitygate.wait=true
   sonarQG:
     needs: sonarcloud
     runs-on: ubuntu-latest
